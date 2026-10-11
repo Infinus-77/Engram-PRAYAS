@@ -1,0 +1,621 @@
+{% extends "base.html" %}
+
+{% block title %}ENGRAM — AI-Powered Student Comprehension Assessment{% endblock %}
+
+{% block content %}
+<div class="flex flex-col w-full">
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 1: HERO - THE ACTIVE RECALL MANDATE                               -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-[#F7F5EE] border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <!-- Top Meta Badge Row -->
+            <div class="flex flex-wrap items-center gap-space-sm font-label-md text-label-md">
+                <span class="inline-flex items-center gap-space-xs bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs shadow-[2px_2px_0px_#0E1013]">
+                    <span class="w-2 h-2 bg-error inline-block"></span>
+                    <span>PROBLEM ID: ENGRAM-INFO-26-S-007</span>
+                </span>
+                <span class="inline-flex items-center gap-space-xs bg-[#E8F8EE] text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs shadow-[2px_2px_0px_#0E1013]">
+                    <span class="material-symbols-outlined text-[16px] text-tertiary">school</span>
+                    <span class="font-bold">SDG 4: QUALITY EDUCATION ALIGNED</span>
+                </span>
+                <span class="inline-flex items-center gap-space-xs bg-surface-container-highest text-on-surface-variant border-[2px] border-[#0E1013] px-space-md py-space-xs shadow-[2px_2px_0px_#0E1013] ml-auto">
+                    <span>COGNITIVE RETRIEVAL HARNESS V2.4</span>
+                </span>
+            </div>
+
+            <!-- Massive Display Headline with brutalist amber highlight -->
+            <div class="flex flex-col gap-space-md pt-space-xs">
+                <h1 class="font-display text-display uppercase text-[#0E1013] leading-[1.05] tracking-tight font-extrabold">
+                    READ. PURGE. RECALL.<br class="hidden sm:inline"/>
+                    <span class="inline-block bg-secondary-container text-[#0E1013] border-[3px] border-[#0E1013] px-space-md py-space-xs shadow-[5px_5px_0px_#0E1013] mt-2">
+                        TRUE COMPREHENSION.
+                    </span>
+                </h1>
+                <p class="font-body-lg text-body-lg text-on-surface max-w-4xl pt-space-xs">
+                    Passive skimming creates an illusion of competence. <strong class="font-bold text-[#0E1013]">ENGRAM</strong> forces active cognitive retrieval: read a technical text for a strict 75-second window before it is permanently purged, write a summary from memory in your own words, and receive instant feedback from a proprietary hybrid AI evaluation engine.
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap items-center gap-space-md pt-space-sm">
+                <a class="inline-flex items-center gap-space-sm bg-primary-container text-on-primary font-label-lg text-label-lg uppercase tracking-wider px-space-lg py-space-md border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0E1013] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none transition-transform" href="#article-catalog">
+                    <span>EXPLORE AVAILABLE ARTICLES ↓</span>
+                    <span class="material-symbols-outlined text-[20px]">arrow_downward</span>
+                </a>
+                <a class="inline-flex items-center gap-space-sm bg-surface-container-lowest text-on-surface font-label-lg text-label-lg uppercase tracking-wider px-space-lg py-space-md border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0E1013] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none transition-transform" href="#how-it-works">
+                    <span class="material-symbols-outlined text-[20px]">psychology</span>
+                    <span>HOW IT WORKS</span>
+                </a>
+            </div>
+
+            <!-- Telemetry Micro-Ribbon -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-space-md pt-space-md">
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] p-space-md shadow-[4px_4px_0px_#0E1013] flex flex-col justify-between">
+                    <span class="font-label-sm text-label-sm uppercase text-outline">TEMPORAL CONSTRAINT</span>
+                    <span class="font-headline-sm text-headline-sm text-[#0E1013] mt-space-xs font-bold">⏱ 75S FIXED READ</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant mt-space-xs">Strict window limit</span>
+                </div>
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] p-space-md shadow-[4px_4px_0px_#0E1013] flex flex-col justify-between">
+                    <span class="font-label-sm text-label-sm uppercase text-outline">MEMORY ENFORCEMENT</span>
+                    <span class="font-headline-sm text-headline-sm text-[#0E1013] mt-space-xs font-bold">🔒 DOM PURGE</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant mt-space-xs">Zero copy-paste crutch</span>
+                </div>
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] p-space-md shadow-[4px_4px_0px_#0E1013] flex flex-col justify-between">
+                    <span class="font-label-sm text-label-sm uppercase text-outline">EVALUATION BACKBONE</span>
+                    <span class="font-headline-sm text-headline-sm text-[#0E1013] mt-space-xs font-bold">⚙️ HYBRID AI ENGINE</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant mt-space-xs">Multi-layer evaluation system</span>
+                </div>
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] p-space-md shadow-[4px_4px_0px_#0E1013] flex flex-col justify-between">
+                    <span class="font-label-sm text-label-sm uppercase text-outline">RUBRIC CALIBRATION</span>
+                    <span class="font-headline-sm text-headline-sm text-[#0E1013] mt-space-xs font-bold">📊 1–10 MATRIX</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant mt-space-xs">3-tier targeted feedback</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 2: THE COGNITIVE CONTRAST (BENTO PAIR)                            -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-surface-container-low border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <div class="flex flex-col gap-space-xs">
+                <span class="font-label-md text-label-md text-outline uppercase tracking-wider">EXPERIMENTAL FOUNDATION</span>
+                <h2 class="font-headline-lg text-headline-lg uppercase text-[#0E1013] font-bold">THE COGNITIVE CONTRAST</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                    Visual recognition is neurologically distinct from retrieval recall. ENGRAM eliminates the pseudo-competence trap of open-book reading.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+                <!-- Card 1: Passive Reading Illusion -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[8px_8px_0px_#0E1013] flex flex-col">
+                    <div class="bg-[#FFEAEA] border-b-[3px] border-[#0E1013] p-space-md flex items-center justify-between">
+                        <span class="font-headline-sm text-headline-sm uppercase text-[#0E1013] flex items-center gap-space-sm font-bold">
+                            <span class="w-3 h-3 bg-error inline-block border border-[#0E1013]"></span>
+                            The Passive Reading Illusion
+                        </span>
+                        <span class="border-[2px] border-error bg-surface-container-lowest text-error font-label-sm text-label-sm px-space-sm py-space-xs uppercase font-bold">
+                            FLAWED SYSTEM
+                        </span>
+                    </div>
+                    <div class="p-space-lg flex flex-col gap-space-md flex-1">
+                        <p class="font-body-md text-body-md text-on-surface">
+                            Students skim technical paragraphs with open eyes, confusing eye-tracking speed with schema integration. When the stimulus remains accessible during question-answering, responses degenerate into surface-level text mining and verbatim copying.
+                        </p>
+                        <div class="bg-surface-container p-space-md border-[2px] border-[#0E1013] flex flex-col gap-space-xs font-label-sm text-label-sm">
+                            <div class="flex items-center justify-between text-error font-bold">
+                                <span>✕ RECOGNITION BIAS:</span>
+                                <span>HIGH (88%)</span>
+                            </div>
+                            <div class="w-full bg-surface-container-highest h-3 border border-[#0E1013]">
+                                <div class="bg-error h-full w-[88%]"></div>
+                            </div>
+                            <div class="flex items-center justify-between text-on-surface-variant pt-space-xs">
+                                <span>RETENTION AFTER 48H:</span>
+                                <span>RAPID DECAY (&lt;14%)</span>
+                            </div>
+                        </div>
+                        <div class="mt-auto border-[2px] border-error bg-[#FFEAEA] p-space-sm font-label-md text-label-md font-bold text-on-surface">
+                            RESULT: Superficial retention, LLM prompt copy-paste, zero durable conceptual mastery.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: ENGRAM Active Recall Loop -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[8px_8px_0px_#0E1013] flex flex-col">
+                    <div class="bg-[#E8F8EE] border-b-[3px] border-[#0E1013] p-space-md flex items-center justify-between">
+                        <span class="font-headline-sm text-headline-sm uppercase text-[#0E1013] flex items-center gap-space-sm font-bold">
+                            <span class="w-3 h-3 bg-tertiary inline-block border border-[#0E1013]"></span>
+                            The ENGRAM Active Recall Loop
+                        </span>
+                        <span class="border-[2px] border-tertiary bg-surface-container-lowest text-tertiary font-label-sm text-label-sm px-space-sm py-space-xs uppercase font-bold">
+                            COGNITIVE RIGOR
+                        </span>
+                    </div>
+                    <div class="p-space-lg flex flex-col gap-space-md flex-1">
+                        <p class="font-body-md text-body-md text-on-surface">
+                            By enforcing a 75-second hard stimulus boundary followed by complete DOM eradication, the student's working memory is forced to construct, serialize, and articulate concepts independently without visual reference crutches.
+                        </p>
+                        <div class="bg-surface-container p-space-md border-[2px] border-[#0E1013] flex flex-col gap-space-xs font-label-sm text-label-sm">
+                            <div class="flex items-center justify-between text-tertiary font-bold">
+                                <span>✓ SYNAPTIC CONSOLIDATION:</span>
+                                <span>ENFORCED (94%)</span>
+                            </div>
+                            <div class="w-full bg-surface-container-highest h-3 border border-[#0E1013]">
+                                <div class="bg-tertiary h-full w-[94%]"></div>
+                            </div>
+                            <div class="flex items-center justify-between text-on-surface-variant pt-space-xs">
+                                <span>RETENTION AFTER 48H:</span>
+                                <span>DURABLE ENCODING (79%)</span>
+                            </div>
+                        </div>
+                        <div class="mt-auto border-[2px] border-tertiary bg-[#E8F8EE] p-space-sm font-label-md text-label-md font-bold text-on-surface">
+                            RESULT: Deep neural schema reconstruction, authentic comprehension, deterministic grading.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 3: THE 4-STAGE ASSESSMENT WORKFLOW                                -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-[#F7F5EE] border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl" id="how-it-works">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <div class="flex flex-col gap-space-xs">
+                <span class="font-label-md text-label-md text-outline uppercase tracking-wider">EXECUTION ARCHITECTURE</span>
+                <h2 class="font-headline-lg text-headline-lg uppercase text-[#0E1013] font-bold">THE 4-STAGE ASSESSMENT WORKFLOW</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                    A zero-latency, strict pipeline engineered for tamper-proof evaluation and immediate pedagogical calibration.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+                <!-- Stage 01 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] p-space-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b-[3px] border-[#0E1013] pb-space-sm mb-space-md">
+                            <span class="font-display text-display text-[#0E1013] leading-none font-bold">01</span>
+                            <span class="bg-secondary-container border-[2px] border-[#0E1013] px-space-xs py-0 font-label-sm text-label-sm font-bold">STAGE 1</span>
+                        </div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] mb-space-xs font-bold">TIMED READ</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            The passage renders inside an isolated stimulus frame with a fixed 75-second countdown timer. Selection and copy commands are monitored.
+                        </p>
+                    </div>
+                    <div class="mt-space-lg pt-space-md border-t-[2px] border-[#0E1013] flex items-center justify-between font-label-sm text-label-sm">
+                        <span class="text-outline">T-MINUS</span>
+                        <span class="font-bold text-primary">75.0 SECONDS</span>
+                    </div>
+                </div>
+
+                <!-- Stage 02 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] p-space-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b-[3px] border-[#0E1013] pb-space-sm mb-space-md">
+                            <span class="font-display text-display text-[#0E1013] leading-none font-bold">02</span>
+                            <span class="bg-[#FFEAEA] border-[2px] border-[#0E1013] px-space-xs py-0 font-label-sm text-label-sm font-bold text-error">STAGE 2</span>
+                        </div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] mb-space-xs font-bold">DOM PURGE</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            At T=0s, passage nodes are irreversibly unmounted from the DOM and garbage collected. No inspection trick or scrollback can retrieve the text.
+                        </p>
+                    </div>
+                    <div class="mt-space-lg pt-space-md border-t-[2px] border-[#0E1013] flex items-center justify-between font-label-sm text-label-sm">
+                        <span class="text-outline">SECURITY</span>
+                        <span class="font-bold text-error">ZERO PERSISTENCE</span>
+                    </div>
+                </div>
+
+                <!-- Stage 03 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] p-space-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b-[3px] border-[#0E1013] pb-space-sm mb-space-md">
+                            <span class="font-display text-display text-[#0E1013] leading-none font-bold">03</span>
+                            <span class="bg-primary-fixed border-[2px] border-[#0E1013] px-space-xs py-0 font-label-sm text-label-sm font-bold text-primary">STAGE 3</span>
+                        </div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] mb-space-xs font-bold">ACTIVE RECALL</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            A high-focus synthesis terminal unlocks. The student writes their conceptual model with real-time length validation (minimum 30 tokens required).
+                        </p>
+                    </div>
+                    <div class="mt-space-lg pt-space-md border-t-[2px] border-[#0E1013] flex items-center justify-between font-label-sm text-label-sm">
+                        <span class="text-outline">THRESHOLD</span>
+                        <span class="font-bold text-on-surface">≥ 30 WORDS</span>
+                    </div>
+                </div>
+
+                <!-- Stage 04 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] p-space-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b-[3px] border-[#0E1013] pb-space-sm mb-space-md">
+                            <span class="font-display text-display text-[#0E1013] leading-none font-bold">04</span>
+                            <span class="bg-[#E8F8EE] border-[2px] border-[#0E1013] px-space-xs py-0 font-label-sm text-label-sm font-bold text-tertiary">STAGE 4</span>
+                        </div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] mb-space-xs font-bold">HYBRID AI SCORE</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            A dual-layer AI engine applies deterministic classification and qualitative synthesis to produce a calibrated 1–10 mastery score with targeted concept feedback.
+                        </p>
+                    </div>
+                    <div class="mt-space-lg pt-space-md border-t-[2px] border-[#0E1013] flex items-center justify-between font-label-sm text-label-sm">
+                        <span class="text-outline">EVAL TIME</span>
+                        <span class="font-bold text-tertiary">&lt; 850MS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 4: UNDER THE HOOD - THE THREE-TIER HYBRID ENGINE                  -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-surface-container-low border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl" id="architecture">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <div class="flex flex-col gap-space-xs">
+                <span class="font-label-md text-label-md text-outline uppercase tracking-wider">PIPELINE SPECIFICATION</span>
+                <h2 class="font-headline-lg text-headline-lg uppercase text-[#0E1013] font-bold">UNDER THE HOOD: THE THREE-TIER HYBRID ENGINE</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                    How ENGRAM delivers low-latency evaluation with rigorous anti-cheat guardrails and deterministic grading.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+                <!-- Tier 1 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex flex-col">
+                    <div class="bg-surface-container border-b-[3px] border-[#0E1013] p-space-md flex items-center justify-between">
+                        <span class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold">TIER 1: INPUT VALIDATION</span>
+                        <span class="font-label-sm text-label-sm px-space-xs py-0 bg-surface-container-lowest border border-[#0E1013] font-bold">IN-MEMORY</span>
+                    </div>
+                    <div class="p-space-lg flex flex-col gap-space-md flex-1">
+                        <p class="font-body-sm text-body-sm text-on-surface">
+                            Deterministic sanity checks executed prior to any outbound evaluation payload:
+                        </p>
+                        <ul class="font-label-sm text-label-sm space-y-space-xs text-on-surface-variant">
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-error font-bold">▸</span>
+                                <span>Length gate: Instant rejection if response falls below minimum threshold.</span>
+                            </li>
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-error font-bold">▸</span>
+                                <span>Input sanitization and injection boundary enforcement.</span>
+                            </li>
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-error font-bold">▸</span>
+                                <span>N-gram similarity check against original stimulus to flag verbatim copy attempts.</span>
+                            </li>
+                        </ul>
+                        <div class="mt-auto bg-surface-container p-space-sm border border-[#0E1013] font-label-sm text-label-sm flex justify-between">
+                            <span class="text-outline">EXECUTION:</span>
+                            <span class="font-bold text-tertiary">SUB-MILLISECOND</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 2 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex flex-col">
+                    <div class="bg-surface-container border-b-[3px] border-[#0E1013] p-space-md flex items-center justify-between">
+                        <span class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold">TIER 2: DETERMINISTIC SCORING</span>
+                        <span class="font-label-sm text-label-sm px-space-xs py-0 bg-secondary-container border border-[#0E1013] font-bold">CLASSIFICATION</span>
+                    </div>
+                    <div class="p-space-lg flex flex-col gap-space-md flex-1">
+                        <p class="font-body-sm text-body-sm text-on-surface">
+                            High-speed structured scoring with deterministic, reproducible calibration:
+                        </p>
+                        <ul class="font-label-sm text-label-sm space-y-space-xs text-on-surface-variant">
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-primary font-bold">▸</span>
+                                <span>Categorical routing engine maps responses to comprehension levels without probabilistic drift.</span>
+                            </li>
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-primary font-bold">▸</span>
+                                <span>Fractional probability distributions computed across 10 discrete mastery tiers.</span>
+                            </li>
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-primary font-bold">▸</span>
+                                <span>Zero hallucination risk: pure structured decision matrix, no generative output.</span>
+                            </li>
+                        </ul>
+                        <div class="mt-auto bg-surface-container p-space-sm border border-[#0E1013] font-label-sm text-label-sm flex justify-between">
+                            <span class="text-outline">RESPONSE CLASS:</span>
+                            <span class="font-bold text-primary">LOW-LATENCY API</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex flex-col">
+                    <div class="bg-surface-container border-b-[3px] border-[#0E1013] p-space-md flex items-center justify-between">
+                        <span class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold">TIER 3: QUALITATIVE SYNTHESIS</span>
+                        <span class="font-label-sm text-label-sm px-space-xs py-0 bg-primary-fixed border border-[#0E1013] font-bold">SYNTHESIS</span>
+                    </div>
+                    <div class="p-space-lg flex flex-col gap-space-md flex-1">
+                        <p class="font-body-sm text-body-sm text-on-surface">
+                            Natural language feedback generator calibrated by pre-cached technical rubrics:
+                        </p>
+                        <ul class="font-label-sm text-label-sm space-y-space-xs text-on-surface-variant">
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-tertiary font-bold">▸</span>
+                                <span>Pre-cached rubric schemas enable consistent, repeatable concept-level evaluation.</span>
+                            </li>
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-tertiary font-bold">▸</span>
+                                <span>Generates a concise 2–3 sentence critique pinpointing missed core mechanisms.</span>
+                            </li>
+                            <li class="flex items-start gap-space-xs">
+                                <span class="text-tertiary font-bold">▸</span>
+                                <span>Acts as consensus arbitrator when the deterministic tier returns high-entropy results.</span>
+                            </li>
+                        </ul>
+                        <div class="mt-auto bg-surface-container p-space-sm border border-[#0E1013] font-label-sm text-label-sm flex justify-between">
+                            <span class="text-outline">OUTPUT MODE:</span>
+                            <span class="font-bold text-on-surface">TARGETED CRITIQUE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 5: LIVE ARTICLE CATALOG GRID                                      -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-[#F7F5EE] border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl" id="article-catalog">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <!-- Section Header & Filter Toolbar -->
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md pb-space-sm border-b-[3px] border-[#0E1013]">
+                <div class="flex flex-col gap-space-xs">
+                    <div class="flex items-center gap-space-sm">
+                        <h2 class="font-headline-lg text-headline-lg uppercase text-[#0E1013] font-bold">AVAILABLE ARTICLES</h2>
+                        <span class="sr-only">Available articles</span>
+                        <span class="border-[2px] border-[#0E1013] bg-secondary-container px-space-sm py-space-xs font-label-md text-label-md font-bold shadow-[2px_2px_0px_#0E1013]">
+                            {{ articles|length }} BENCHMARKED
+                        </span>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface-variant">
+                        Select a verified technical text. Once triggered, the 75-second countdown begins immediately.
+                    </p>
+                </div>
+                <!-- Filter Tabs -->
+                <div class="flex flex-wrap items-center gap-space-xs font-label-sm text-label-sm">
+                    <button type="button" onclick="filterArticles('all')" id="filter-all" class="filter-btn bg-[#0E1013] text-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-bold shadow-[2px_2px_0px_#0E1013] transition-all">
+                        ALL [{{ articles|length }}]
+                    </button>
+                    <button type="button" onclick="filterArticles('data-structures')" id="filter-data-structures" class="filter-btn bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] transition-all">
+                        DATA STRUCTURES
+                    </button>
+                    <button type="button" onclick="filterArticles('networking')" id="filter-networking" class="filter-btn bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] transition-all">
+                        NETWORKING
+                    </button>
+                    <button type="button" onclick="filterArticles('hardware')" id="filter-hardware" class="filter-btn bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] transition-all">
+                        HARDWARE
+                    </button>
+                    <button type="button" onclick="filterArticles('security')" id="filter-security" class="filter-btn bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] transition-all">
+                        SECURITY
+                    </button>
+                </div>
+            </div>
+
+            <!-- Articles Grid -->
+            {% if articles %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg" id="articles-grid" aria-label="Available articles">
+                {% for article in articles %}
+                {% set category %}
+                    {%- if 'Hash' in article.title or 'Binary' in article.title -%}data-structures
+                    {%- elif 'TCP' in article.title or 'REST' in article.title -%}networking
+                    {%- elif 'Cache' in article.title or 'Recursion' in article.title -%}hardware
+                    {%- elif 'Crypto' in article.title or 'Database' in article.title -%}security
+                    {%- else -%}data-structures{%- endif -%}
+                {% endset %}
+                {% set category_name %}
+                    {%- if 'Hash' in article.title or 'Binary' in article.title -%}DATA STRUCTURES
+                    {%- elif 'TCP' in article.title or 'REST' in article.title -%}NETWORKING
+                    {%- elif 'Cache' in article.title or 'Recursion' in article.title -%}HARDWARE
+                    {%- elif 'Crypto' in article.title or 'Database' in article.title -%}SECURITY
+                    {%- else -%}SYSTEMS{%- endif -%}
+                {% endset %}
+                {% set category_color %}
+                    {%- if 'Hash' in article.title or 'Binary' in article.title -%}text-primary
+                    {%- elif 'TCP' in article.title or 'REST' in article.title -%}text-secondary
+                    {%- elif 'Cache' in article.title or 'Recursion' in article.title -%}text-tertiary
+                    {%- elif 'Crypto' in article.title or 'Database' in article.title -%}text-error
+                    {%- else -%}text-primary{%- endif -%}
+                {% endset %}
+                {% set badge_highlight %}
+                    {%- if 'Hash' in article.title -%}O(1) AMORTIZED
+                    {%- elif 'Binary' in article.title -%}O(LOG N)
+                    {%- elif 'TCP' in article.title -%}SYN/ACK STATE
+                    {%- elif 'REST' in article.title -%}HTTP / RFC-7231
+                    {%- elif 'Cache' in article.title -%}L1/L2 BUS SNOOP
+                    {%- elif 'Recursion' in article.title -%}CALL STACK / O(N)
+                    {%- elif 'Crypto' in article.title -%}ASYMMETRIC PKI
+                    {%- elif 'Database' in article.title -%}B-TREE / O(LOG N)
+                    {%- else -%}CORE SPEC{%- endif -%}
+                {% endset %}
+                {% set badge_highlight_class %}
+                    {%- if 'Hash' in article.title or 'Binary' in article.title -%}bg-[#E8F8EE] border-tertiary text-tertiary
+                    {%- elif 'TCP' in article.title or 'REST' in article.title -%}bg-primary-fixed border-primary text-primary
+                    {%- elif 'Cache' in article.title -%}bg-[#FFEAEA] border-error text-error
+                    {%- elif 'Recursion' in article.title -%}bg-[#E8F8EE] border-tertiary text-tertiary
+                    {%- elif 'Crypto' in article.title or 'Database' in article.title -%}bg-primary-fixed border-primary text-primary
+                    {%- else -%}bg-[#E8F8EE] border-tertiary text-tertiary{%- endif -%}
+                {% endset %}
+                {% set diff_badge %}
+                    {%- if 'Hash' in article.title or 'Binary' in article.title or 'Recursion' in article.title -%}DIFF: CORE
+                    {%- elif 'Cache' in article.title or 'Database' in article.title -%}DIFF: ADVANCED
+                    {%- else -%}DIFF: SYSTEMS{%- endif -%}
+                {% endset %}
+
+                <div class="article-card-item bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex flex-col justify-between hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_#0E1013] transition-all" data-category="{{ category.strip() }}">
+                    <div>
+                        <div class="bg-surface-container border-b-[3px] border-[#0E1013] p-space-md flex items-center justify-between">
+                            <span class="font-label-sm text-label-sm uppercase font-bold {{ category_color.strip() }}">{{ category_name.strip() }}</span>
+                            <span class="font-label-sm text-label-sm px-space-xs py-0 bg-surface-container-lowest border border-[#0E1013] font-bold">#{{ "%02d"|format(loop.index) }}</span>
+                        </div>
+                        <div class="p-space-lg flex flex-col gap-space-sm">
+                            <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold">{{ article.title }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                {{ article.text[:140] }}{% if article.text|length > 140 %}…{% endif %}
+                            </p>
+                            <div class="flex flex-wrap gap-space-xs pt-space-xs font-label-sm text-label-sm">
+                                <span class="border px-space-xs py-0 font-bold {{ badge_highlight_class.strip() }}">
+                                    {{ badge_highlight.strip() }}
+                                </span>
+                                <span class="bg-surface-container border border-[#0E1013] px-space-xs py-0">~{{ (article.text.split()|length) }} WORDS</span>
+                                <span class="bg-surface-container border border-[#0E1013] px-space-xs py-0">
+                                    {{ diff_badge.strip() }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-space-lg pt-0">
+                        <form method="POST" action="/sessions" id="article-{{ article.id }}">
+                            <input type="hidden" name="article_id" value="{{ article.id }}">
+                            <button type="submit" class="w-full bg-secondary-container text-[#0E1013] font-label-md text-label-md uppercase font-bold py-space-md px-space-md border-[3px] border-[#0E1013] shadow-[4px_4px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0E1013] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-transform flex items-center justify-center gap-space-sm start-btn">
+                                <span>START READING (75S)</span>
+                                <span class="sr-only">Start Reading</span>
+                                <span class="material-symbols-outlined text-[18px]">timer</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-xl flex flex-col items-center justify-center text-center gap-space-md">
+                <div class="w-16 h-16 bg-secondary-container border-[3px] border-[#0E1013] shadow-[4px_4px_0px_#0E1013] flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[32px] text-[#0E1013]">menu_book</span>
+                </div>
+                <div class="space-y-space-xs max-w-md">
+                    <h3 class="font-headline-sm text-headline-sm uppercase font-bold text-on-surface">No Articles Available</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">
+                        No assessment articles are currently available. Please check back later or contact your platform administrator.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 6: PLATFORM CAPABILITIES                                          -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-surface-container-low border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <div class="flex flex-col gap-space-xs">
+                <span class="font-label-md text-label-md text-outline uppercase tracking-wider">PLATFORM INTEGRITY</span>
+                <h2 class="font-headline-lg text-headline-lg uppercase text-[#0E1013] font-bold">BUILT FOR RIGOROUS ASSESSMENT</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                    Every component of ENGRAM is engineered to eliminate assessment shortcuts and ensure authentic, verifiable comprehension.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+                <!-- Cap 1 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                    <div class="w-10 h-10 bg-secondary-container border-[3px] border-[#0E1013] flex items-center justify-center shadow-[3px_3px_0px_#0E1013]">
+                        <span class="material-symbols-outlined text-[22px] text-[#0E1013]">shield_lock</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold mb-space-xs">TAMPER-PROOF SESSIONS</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            Each assessment is cryptographically session-scoped. Article text is single-served and irrecoverably purged — no browser tool, network inspection, or page refresh can restore it.
+                        </p>
+                    </div>
+                    <div class="mt-auto pt-space-sm border-t-[2px] border-[#0E1013] font-label-sm text-label-sm flex items-center justify-between">
+                        <span class="text-outline">PROTECTION LEVEL</span>
+                        <span class="font-bold text-tertiary">ZERO-PERSISTENCE</span>
+                    </div>
+                </div>
+                <!-- Cap 2 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                    <div class="w-10 h-10 bg-secondary-container border-[3px] border-[#0E1013] flex items-center justify-center shadow-[3px_3px_0px_#0E1013]">
+                        <span class="material-symbols-outlined text-[22px] text-[#0E1013]">psychology</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold mb-space-xs">CALIBRATED RUBRIC ENGINE</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            Every article is paired with a pre-generated expert rubric covering key concepts, expected mechanisms, and common misconceptions — ensuring consistent, fair grading across all submissions.
+                        </p>
+                    </div>
+                    <div class="mt-auto pt-space-sm border-t-[2px] border-[#0E1013] font-label-sm text-label-sm flex items-center justify-between">
+                        <span class="text-outline">CONSISTENCY GRADE</span>
+                        <span class="font-bold text-primary">DETERMINISTIC</span>
+                    </div>
+                </div>
+                <!-- Cap 3 -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                    <div class="w-10 h-10 bg-secondary-container border-[3px] border-[#0E1013] flex items-center justify-center shadow-[3px_3px_0px_#0E1013]">
+                        <span class="material-symbols-outlined text-[22px] text-[#0E1013]">analytics</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm uppercase text-[#0E1013] font-bold mb-space-xs">INSTANT DIAGNOSTIC FEEDBACK</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">
+                            Results surface a 1–10 comprehension index, a qualitative critique, and a point-by-point breakdown of covered and missed concepts — giving students actionable insight immediately after submission.
+                        </p>
+                    </div>
+                    <div class="mt-auto pt-space-sm border-t-[2px] border-[#0E1013] font-label-sm text-label-sm flex items-center justify-between">
+                        <span class="text-outline">FEEDBACK MODE</span>
+                        <span class="font-bold text-on-surface">REAL-TIME</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 7: COMPREHENSIVE ACADEMIC TELEMETRY RIBBON                        -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-[#F7F5EE] px-gutter md:px-margin-desktop py-space-lg">
+        <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-space-md border-[2px] border-[#0E1013] bg-surface-container-lowest p-space-md shadow-[4px_4px_0px_#0E1013]">
+            <div class="flex flex-wrap items-center gap-space-md font-label-sm text-label-sm text-on-surface">
+                <div class="flex items-center gap-space-xs">
+                    <span class="text-outline">SYSTEM STATUS:</span>
+                    <span class="font-bold text-tertiary">PIPELINE OPERATIONAL</span>
+                </div>
+                <div class="flex items-center gap-space-xs">
+                    <span class="text-outline">BUILD:</span>
+                    <span class="font-bold">ENGRAM-V2.6.4-STABLE</span>
+                </div>
+                <div class="flex items-center gap-space-xs">
+                    <span class="text-outline">INTEGRITY HASH:</span>
+                    <span class="font-mono">SHA256:7e8a9...b01f</span>
+                </div>
+            </div>
+            <div class="font-label-sm text-label-sm uppercase font-bold text-on-surface-variant">
+                STANDARDS COMPLIANT: IEEE-LOM-V4.2 • SCORM 2004
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+
+function filterArticles(category) {
+    const cards = document.querySelectorAll('.article-card-item');
+    const buttons = document.querySelectorAll('.filter-btn');
+
+    // Reset button states
+    buttons.forEach(btn => {
+        btn.classList.remove('bg-[#0E1013]', 'text-surface-container-lowest');
+        btn.classList.add('bg-surface-container-lowest', 'text-on-surface');
+    });
+
+    const activeBtn = document.getElementById('filter-' + category);
+    if (activeBtn) {
+        activeBtn.classList.remove('bg-surface-container-lowest', 'text-on-surface');
+        activeBtn.classList.add('bg-[#0E1013]', 'text-surface-container-lowest');
+    }
+
+    cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

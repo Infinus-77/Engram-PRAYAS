@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="web_standard" name="shell-type"/>
+    <meta name="description" content="ENGRAM — AI-powered student comprehension assessment. Read, summarize, and receive instant feedback."/>
+    <title>{% block title %}ENGRAM — AI-Powered Student Comprehension Assessment{% endblock %}</title>
+
+    <!-- Typography & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <!-- Tailwind CDN & Editorial Brutalism Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#6f5400",
+                        "background": "#f9f9fd",
+                        "outline-variant": "#c4c5d5",
+                        "surface-container-low": "#f3f3f7",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#3ce36a",
+                        "surface-dim": "#d9dade",
+                        "inverse-primary": "#b5c4ff",
+                        "secondary": "#775a00",
+                        "on-primary-container": "#c5d0ff",
+                        "secondary-container": "#ffc72c",
+                        "primary": "#0038a4",
+                        "tertiary": "#004e1c",
+                        "on-background": "#1a1c1f",
+                        "primary-container": "#2a52be",
+                        "on-tertiary-fixed": "#002108",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "primary-fixed": "#dce1ff",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00164d",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2f3034",
+                        "secondary-fixed-dim": "#f6bf22",
+                        "surface-bright": "#f9f9fd",
+                        "tertiary-fixed": "#69ff87",
+                        "on-tertiary-container": "#4cef74",
+                        "surface-container": "#eeedf2",
+                        "surface": "#f9f9fd",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e2e2e6",
+                        "inverse-on-surface": "#f0f0f5",
+                        "surface-container-high": "#e8e8ec",
+                        "surface-tint": "#2f56c2",
+                        "on-secondary-fixed": "#251a00",
+                        "secondary-fixed": "#ffdf99",
+                        "on-tertiary-fixed-variant": "#00531e",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "outline": "#747684",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#434653",
+                        "on-surface": "#1a1c1f",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#073daa",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#006928",
+                        "surface-variant": "#e2e2e6"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "space-sm": "0.5rem",
+                        "gutter-desktop": "2rem",
+                        "gutter": "1.5rem",
+                        "margin-desktop": "3rem",
+                        "space-xs": "0.25rem",
+                        "space-lg": "1.5rem",
+                        "margin": "1.5rem",
+                        "space-xl": "2.5rem",
+                        "space-md": "1rem"
+                    },
+                    fontFamily: {
+                        "label-md": ["JetBrains Mono", "monospace"],
+                        "label-sm": ["JetBrains Mono", "monospace"],
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "headline-lg": ["Space Grotesk", "sans-serif"],
+                        "headline-sm": ["Space Grotesk", "sans-serif"],
+                        "headline-md": ["Space Grotesk", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-sm": ["Inter", "sans-serif"],
+                        "label-lg": ["JetBrains Mono", "monospace"],
+                        "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"]
+                    },
+                    fontSize: {
+                        "label-md": ["0.8125rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "display": ["3.5rem", { "lineHeight": "4rem", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "headline-lg": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "headline-sm": ["1.25rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["1.125rem", { "lineHeight": "1.875rem", "letterSpacing": "-0.011em", "fontWeight": "400" }],
+                        "body-sm": ["0.875rem", { "lineHeight": "1.375rem", "fontWeight": "400" }],
+                        "label-lg": ["0.9375rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["1.75rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["1rem", { "lineHeight": "1.625rem", "letterSpacing": "-0.006em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        @layer base {
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                overscroll-behavior: none;
+            }
+            main > :first-child {
+                margin-top: 0 !important;
+            }
+            main > :last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        #article-body, #article-body * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-surface">
+    <!-- Top Editorial Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#F7F5EE] border-b-[3px] border-[#0E1013]">
+        <div class="h-20 w-full px-gutter-desktop mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-space-md">
+                <a href="/" class="flex items-center gap-space-sm bg-secondary-container text-on-surface border-[3px] border-[#0E1013] px-space-md py-space-xs shadow-[3px_3px_0px_#0E1013] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#0E1013] transition-all">
+                    <span class="font-label-lg text-label-lg font-bold">◈</span>
+                    <span class="font-headline-sm text-headline-sm uppercase tracking-tight font-bold">ENGRAM</span>
+                </a>
+                <div class="hidden xl:flex items-center border-[2px] border-[#0E1013] bg-surface-container-lowest px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-wider text-on-surface shadow-[1px_1px_0px_#0E1013]">
+                    <span class="text-outline mr-space-xs">REF:</span>
+                    <span>ENGRAM-INFO-26-S-007</span>
+                </div>
+            </div>
+
+            {# session_active is set to true by session.html when in an active read/write phase #}
+            {% set _nav_locked = session_active | default(false) %}
+
+            <!-- Navigation Links -->
+            <nav class="flex items-center gap-space-md font-label-md text-label-md uppercase tracking-wider" data-active-classes="bg-secondary-container text-on-surface shadow-[4px_4px_0px_#0E1013]">
+                {% if _nav_locked %}
+                    {# Locked ghost links — not clickable, dimmed, with lock indicator #}
+                    {% for label in ['Articles', 'Protocol', 'Architecture'] %}
+                    <span title="Navigation locked during active assessment session"
+                          class="border-[3px] border-[#0E1013] px-space-md py-space-xs transition-all duration-75 text-on-surface-variant opacity-40 cursor-not-allowed select-none flex items-center gap-space-xs pointer-events-none">
+                        <span class="material-symbols-outlined text-[13px]">lock</span>
+                        {{ label }}
+                    </span>
+                    {% endfor %}
+                {% else %}
+                    <a class="border-[3px] border-[#0E1013] px-space-md py-space-xs transition-all duration-75 bg-secondary-container text-on-surface shadow-[4px_4px_0px_#0E1013] hover:translate-x-[1px] hover:translate-y-[1px]" href="/#article-catalog">
+                        Articles
+                    </a>
+                    <a class="border-[3px] border-[#0E1013] px-space-md py-space-xs transition-all duration-75 text-on-surface-variant hover:bg-secondary-container hover:text-on-surface hover:shadow-[3px_3px_0px_#0E1013] hover:translate-x-[1px] hover:translate-y-[1px]" href="/#how-it-works">
+                        Protocol
+                    </a>
+                    <a class="border-[3px] border-[#0E1013] px-space-md py-space-xs transition-all duration-75 text-on-surface-variant hover:bg-secondary-container hover:text-on-surface hover:shadow-[3px_3px_0px_#0E1013] hover:translate-x-[1px] hover:translate-y-[1px]" href="/#architecture">
+                        Architecture
+                    </a>
+                {% endif %}
+            </nav>
+
+            <!-- Operational Readiness Status & Profile -->
+            <div class="flex items-center gap-space-md">
+                <div class="hidden md:flex items-center gap-space-xs border-[2px] border-[#0E1013] bg-[#E8F8EE] px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-on-surface shadow-[2px_2px_0px_#0E1013]">
+                    <span class="inline-block w-2 h-2 rounded-none bg-tertiary border border-[#0E1013] animate-pulse"></span>
+                    <span>AI EVALUATION PIPELINE READY</span>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center border-[2px] border-[#0E1013] shadow-[2px_2px_0px_#0E1013]">
+                    <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Stage -->
+    <main class="w-full pt-20 bg-surface min-h-[calc(100vh-80px)]">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Academic Footer -->
+    <footer class="w-full bg-[#F7F5EE] border-t-[3px] border-[#0E1013] font-label-sm text-label-sm">
+        <div class="w-full px-gutter-desktop mx-auto py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant">
+            <div class="flex flex-wrap items-center gap-space-md font-label-sm text-label-sm text-on-surface">
+                <div class="flex items-center gap-space-xs border border-[#0E1013] bg-surface-container-lowest px-space-sm py-space-xs shadow-[1px_1px_0px_#0E1013]">
+                    <span class="text-outline">TELEMETRY:</span>
+                    <span class="font-bold text-tertiary">NODE_ACTIVE_01</span>
+                </div>
+                <div class="flex items-center gap-space-xs border border-[#0E1013] bg-surface-container-lowest px-space-sm py-space-xs shadow-[1px_1px_0px_#0E1013]">
+                    <span class="text-outline">LATENCY:</span>
+                    <span class="font-bold">18.4ms</span>
+                </div>
+                <div class="flex items-center gap-space-xs border border-[#0E1013] bg-surface-container-lowest px-space-sm py-space-xs shadow-[1px_1px_0px_#0E1013]">
+                    <span class="text-outline">SPEC:</span>
+                    <span>IEEE-LOM-V4.2</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-space-sm text-on-surface font-label-sm text-label-sm uppercase font-semibold">
+                <span class="w-2 h-2 bg-secondary-container border border-[#0E1013]"></span>
+                <span>© 2026 ENGRAM ACADEMIC</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase App & Analytics SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "{{ settings.FIREBASE_API_KEY if settings else 'AIzaSyAlxP4PzqJluvo_YxbxGF7Ksoe-VQ9FaIA' }}",
+            authDomain: "prayas-2ce75.firebaseapp.com",
+            projectId: "prayas-2ce75",
+            storageBucket: "prayas-2ce75.firebasestorage.app",
+            messagingSenderId: "551207538440",
+            appId: "1:551207538440:web:fea873a3a08f450f9da6bd",
+            measurementId: "G-H08329R5H7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        try {
+            const analytics = getAnalytics(app);
+        } catch (e) {
+            console.debug("Firebase analytics initialization skipped:", e);
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

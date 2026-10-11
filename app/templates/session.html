@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article_title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-[1120px] mx-auto px-gutter py-space-lg w-full">
+<div id="session-app"
+     data-session-id="{{ session_id }}"
+     data-read-seconds="{{ read_seconds }}"
+     data-has-article="{{ 'true' if article_text else 'false' }}"
+     data-has-attempt="{{ 'true' if has_attempt else 'false' }}"
+     class="flex flex-col w-full">
+
+    <!-- Interactive State Navigation Control Strip -->
+    <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-md mb-space-lg flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-sm">
+            <span class="inline-flex items-center justify-center w-7 h-7 bg-primary text-on-primary border-[2px] border-[#0E1013] font-label-md text-label-md font-bold">
+                <span class="material-symbols-outlined text-[18px]">terminal</span>
+            </span>
+            <div>
+                <p class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface leading-tight font-bold">Assessment Workstation</p>
+                <p class="font-label-sm text-label-sm text-on-surface-variant uppercase font-medium">Session #{{ session_id[:8] }} • Live Evaluation Stream</p>
+            </div>
+        </div>
+
+        <!-- State Indicator Tabs -->
+        <div class="flex flex-wrap items-center gap-space-xs w-full lg:w-auto" role="tablist">
+            {#
+              Phase detection (mutually exclusive):
+                READ phase  : article_text present  — first visit, timer running
+                WRITE phase : article_text absent, no attempt — post-purge recall
+                RESULT phase: has_attempt true
+
+              Lock rules:
+                READ   -> lock Write + Result
+                WRITE  -> lock Read  + Result
+                RESULT -> lock Read  only
+            #}
+            {% if article_text and not has_attempt %}
+                {% set read_locked   = false %}
+                {% set write_locked  = true  %}
+                {% set result_locked = true  %}
+            {% elif not has_attempt %}
+                {% set read_locked   = true  %}
+                {% set write_locked  = false %}
+                {% set result_locked = true  %}
+            {% else %}
+                {% set read_locked   = true  %}
+                {% set write_locked  = false %}
+                {% set result_locked = false %}
+            {% endif %}
+
+            <!-- Tab A: Read -->
+            <button type="button"
+                id="btn-state-a"
+                data-locked="{{ 'true' if read_locked else 'false' }}"
+                aria-disabled="{{ 'true' if read_locked else 'false' }}"
+                {% if read_locked %}disabled{% else %}onclick="switchState('state-a')"{% endif %}
+                class="state-tab-btn flex items-center gap-space-xs px-space-md py-space-xs font-label-sm text-label-sm uppercase font-bold border-[2px] border-[#0E1013] transition-all
+                       {% if read_locked %}pointer-events-none opacity-40 cursor-not-allowed bg-surface-container text-on-surface shadow-[2px_2px_0px_#0E1013]
+                       {% elif article_text and not has_attempt %}bg-secondary-container text-on-secondary-container shadow-[3px_3px_0px_#0E1013]
+                       {% else %}bg-surface-container text-on-surface shadow-[2px_2px_0px_#0E1013]{% endif %}">
+                {% if read_locked %}<span class="material-symbols-outlined text-[14px] shrink-0">lock</span>{% endif %}
+                <span class="w-2.5 h-2.5 bg-[#0E1013] inline-block"></span>
+                1. Read Panel ({{ read_seconds }}s)
+            </button>
+
+            <!-- Tab B: Write -->
+            <button type="button"
+                id="btn-state-b"
+                data-locked="{{ 'true' if write_locked else 'false' }}"
+                aria-disabled="{{ 'true' if write_locked else 'false' }}"
+                {% if write_locked %}disabled{% else %}onclick="switchState('state-b')"{% endif %}
+                class="state-tab-btn flex items-center gap-space-xs px-space-md py-space-xs font-label-sm text-label-sm uppercase font-bold border-[2px] border-[#0E1013] transition-all
+                       {% if write_locked %}pointer-events-none opacity-40 cursor-not-allowed bg-surface-container text-on-surface shadow-[2px_2px_0px_#0E1013]
+                       {% elif not article_text and not has_attempt %}bg-secondary-container text-on-secondary-container shadow-[3px_3px_0px_#0E1013]
+                       {% else %}bg-surface-container text-on-surface shadow-[2px_2px_0px_#0E1013]{% endif %}">
+                {% if write_locked %}<span class="material-symbols-outlined text-[14px] shrink-0">lock</span>{% endif %}
+                <span class="w-2.5 h-2.5 bg-outline inline-block"></span>
+                2. Write Panel (Recall)
+            </button>
+
+            <!-- Tab C: Result -->
+            <button type="button"
+                id="btn-state-c"
+                data-locked="{{ 'true' if result_locked else 'false' }}"
+                aria-disabled="{{ 'true' if result_locked else 'false' }}"
+                {% if result_locked %}disabled{% else %}onclick="switchState('state-c')"{% endif %}
+                class="state-tab-btn flex items-center gap-space-xs px-space-md py-space-xs font-label-sm text-label-sm uppercase font-bold border-[2px] border-[#0E1013] transition-all
+                       {% if result_locked %}pointer-events-none opacity-40 cursor-not-allowed bg-surface-container text-on-surface shadow-[2px_2px_0px_#0E1013]
+                       {% elif has_attempt %}bg-secondary-container text-on-secondary-container shadow-[3px_3px_0px_#0E1013]
+                       {% else %}bg-surface-container text-on-surface shadow-[2px_2px_0px_#0E1013]{% endif %}">
+                {% if result_locked %}<span class="material-symbols-outlined text-[14px] shrink-0">lock</span>{% endif %}
+                <span class="w-2.5 h-2.5 bg-outline inline-block"></span>
+                3. Result Panel (AI Matrix)
+            </button>
+        </div>
+    </div>
+
+    <!-- WORKSTATION VIEWPORT -->
+    <div class="relative w-full">
+
+        <!-- ========================================================================= -->
+        <!-- STATE A: READ PANEL (ACTIVE TIMED WINDOW)                                 -->
+        <!-- ========================================================================= -->
+        <section class="assessment-panel {% if not article_text or has_attempt %}hidden{% else %}flex{% endif %} flex-col gap-space-lg w-full" id="panel-state-a">
+            <!-- Session Header Bar -->
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                <div class="flex flex-col gap-space-xs">
+                    <div class="flex items-center gap-space-sm">
+                        <span class="bg-primary-container text-on-primary font-label-sm text-label-sm font-bold px-space-sm py-space-xs border-[2px] border-[#0E1013] shadow-[2px_2px_0px_#0E1013]">
+                            ACTIVE ASSESSMENT SESSION #{{ session_id[:8] }}
+                        </span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant font-bold uppercase hidden sm:inline">
+                            READING WINDOW: {{ read_seconds }}S FIXED
+                        </span>
+                    </div>
+                    <h1 class="font-headline-md text-headline-md text-on-surface tracking-tight uppercase font-bold">
+                        {{ article_title }}
+                    </h1>
+                </div>
+                <div class="flex items-center gap-space-sm shrink-0">
+                    <span class="font-label-sm text-label-sm font-bold text-on-surface bg-surface-container px-space-sm py-space-xs border-[2px] border-[#0E1013]">
+                        READ-ONLY LOCK
+                    </span>
+                    <span class="w-3.5 h-3.5 bg-tertiary-container border-[2px] border-[#0E1013] animate-pulse"></span>
+                </div>
+            </div>
+
+            <!-- Main Read Grid: Split Reading Panel & Timer Telemetry -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+                <!-- Left: Reading Passage Container (8 Cols) -->
+                <article id="article-body-container" class="lg:col-span-8 bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex flex-col select-none">
+                    <!-- Card Header Strip -->
+                    <div class="bg-surface-container border-b-[3px] border-[#0E1013] px-space-lg py-space-md flex items-center justify-between">
+                        <div class="flex items-center gap-space-xs">
+                            <span class="material-symbols-outlined text-[20px] text-primary">menu_book</span>
+                            <span class="font-label-md text-label-md font-bold uppercase text-on-surface">Source Text Stimulus</span>
+                        </div>
+                        <span class="font-label-sm text-label-sm font-bold text-on-surface-variant">
+                            WORD COUNT: ~{{ (article_text.split()|length) if article_text else 0 }} • STATUS: ACTIVE
+                        </span>
+                    </div>
+
+                    <!-- Article Text Body (Strictly unselectable & uncopyable) -->
+                    <div id="article-body"
+                         class="p-space-lg flex flex-col gap-space-md font-body-md text-body-md text-on-surface leading-relaxed max-h-[55vh] overflow-y-auto select-none"
+                         style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;"
+                         oncopy="return false;"
+                         oncut="return false;"
+                         oncontextmenu="return false;"
+                         ondragstart="return false;"
+                         onselectstart="return false;">
+                        {% if article_text %}
+                            {{ article_text | replace('\n\n', '</p><p class="mt-3">') | replace('\n', '<br>') | safe }}
+                        {% else %}
+                            <p class="text-on-surface-variant italic">Article text is no longer in memory.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Hardware Memory Purge Security Warning -->
+                    <div class="mx-space-lg mb-space-lg bg-error-container border-[3px] border-[#0E1013] p-space-md shadow-[4px_4px_0px_#0E1013] flex items-start gap-space-md">
+                        <span class="material-symbols-outlined text-[24px] text-error shrink-0">lock</span>
+                        <div class="flex flex-col gap-space-xs">
+                            <span class="font-label-sm text-label-sm font-bold text-on-error-container tracking-wide uppercase">
+                                Hardware Protection Active • Zero-Persistence Memory
+                            </span>
+                            <p class="font-body-sm text-body-sm text-on-surface leading-snug">
+                                🔒 <strong>SECURITY PROTOCOL:</strong> Once the {{ read_seconds }}-second timer expires or early completion is triggered, this reading DOM container is permanently destroyed and purged from memory. You will not have access to this stimulus during the recall and synthesis stage.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Right: Countdown Widget & Early Completion Panel (4 Cols) -->
+                <aside class="lg:col-span-4 flex flex-col gap-space-lg">
+                    <!-- Brutalist Circular Timer Box -->
+                    <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col items-center text-center">
+                        <div class="flex items-center justify-between w-full border-b-[2px] border-[#0E1013] pb-space-sm mb-space-md">
+                            <span class="font-label-sm text-label-sm font-bold uppercase text-on-surface flex items-center gap-space-xs">
+                                <span class="material-symbols-outlined text-[16px] text-secondary">timer</span> Reading Window
+                            </span>
+                            <span class="font-label-sm text-label-sm font-bold bg-surface-container px-space-xs border border-[#0E1013]">ENGRAM CLK-01</span>
+                        </div>
+
+                        <!-- SVG Circular Gauge with Brutalist stroke -->
+                        <div class="relative w-44 h-44 flex items-center justify-center my-space-sm">
+                            <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 160 160">
+                                <!-- Background Track -->
+                                <circle cx="80" cy="80" fill="#F9F9FD" r="68" stroke="#0E1013" stroke-width="12"></circle>
+                                <!-- Progress Indicator -->
+                                <circle id="timer-progress" cx="80" cy="80" fill="transparent" r="68" stroke="#FFC72C" stroke-dasharray="427.25" stroke-dashoffset="0" stroke-linecap="square" stroke-width="10"></circle>
+                            </svg>
+                            <!-- Digital Readout Center -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                <span class="font-label-lg text-display leading-none font-bold text-on-surface tracking-tighter" id="timer-time">{{ read_seconds }}</span>
+                                <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold mt-1">seconds remaining</span>
+                            </div>
+                        </div>
+
+                        <!-- Indicator Color Scale Thresholds -->
+                        <div class="w-full bg-surface-container border-[2px] border-[#0E1013] p-space-sm my-space-sm flex flex-col gap-space-xs text-left">
+                            <span class="font-label-sm text-label-sm font-bold text-on-surface uppercase">Telemetry Thresholds:</span>
+                            <div class="grid grid-cols-3 gap-space-xs text-center font-label-sm text-label-sm">
+                                <div class="bg-primary-container text-on-primary font-bold py-1 border border-[#0E1013]">
+                                    &gt;20s Nom
+                                </div>
+                                <div class="bg-secondary-container text-on-secondary-container font-bold py-1 border border-[#0E1013]">
+                                    ≤20s Caution
+                                </div>
+                                <div class="bg-error text-on-error font-bold py-1 border border-[#0E1013]">
+                                    ≤10s Urgent
+                                </div>
+                            </div>
+                        </div>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs text-center">
+                            Target cadence: 250 WPM comprehension threshold benchmark.
+                        </p>
+                    </div>
+
+                    <!-- Early Completion Action Card -->
+                    <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-md flex flex-col gap-space-sm">
+                        <span class="font-label-sm text-label-sm font-bold uppercase text-on-surface">Participant Progress Gate</span>
+                        <!-- Brutalist Done-Early Button -->
+                        <button id="done-early-btn" class="w-full bg-surface-container-high text-on-surface-variant border-[3px] border-[#0E1013] py-space-md px-space-md font-label-md text-label-md font-bold uppercase tracking-wider cursor-not-allowed opacity-80 flex items-center justify-center gap-space-sm shadow-[2px_2px_0px_#0E1013] transition-all" disabled>
+                            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            ✓ I'm done reading
+                        </button>
+                        <!-- Helper Hint Badge -->
+                        <div id="done-early-hint" class="flex items-center gap-space-xs bg-surface-container border-[2px] border-[#0E1013] px-space-sm py-space-xs">
+                            <span class="material-symbols-outlined text-[16px] text-secondary">hourglass_top</span>
+                            <span class="font-label-sm text-label-sm font-bold text-on-surface" id="done-hint-text">⏱ Available after 30 seconds (0s elapsed)</span>
+                        </div>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant text-center">
+                            Premature progression is locked to guarantee minimum cognitive encoding integrity.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- STATE B: WRITE PANEL (RECALL & SYNTHESIS)                                  -->
+        <!-- ========================================================================= -->
+        <section class="assessment-panel {% if not article_text and not has_attempt %}flex{% else %}hidden{% endif %} flex-col gap-space-lg w-full" id="panel-state-b">
+            <!-- Special Notice if Text was already served on previous visit -->
+            {% if not article_text and not has_attempt %}
+            <div class="bg-secondary-container border-[3px] border-[#0E1013] p-space-md shadow-[6px_6px_0px_#0E1013] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md">
+                <div class="flex items-start gap-space-sm">
+                    <span class="material-symbols-outlined text-[28px] text-on-secondary-container shrink-0">warning</span>
+                    <div>
+                        <span class="font-label-md text-label-md font-bold uppercase text-on-secondary-container">The article text has already been served for this session</span>
+                        <p class="font-body-sm text-body-sm text-on-secondary-container">You can write your summary below, or return to start a new reading session.</p>
+                    </div>
+                </div>
+                <a href="/" class="bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-1 font-label-sm text-label-sm font-bold uppercase shadow-[2px_2px_0px_#0E1013] shrink-0">
+                    ← Articles
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Session Write Header -->
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md">
+                <div>
+                    <div class="flex items-center gap-space-sm">
+                        <span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold px-space-sm py-space-xs border-[2px] border-[#0E1013] shadow-[2px_2px_0px_#0E1013]">
+                            PHASE 2 • ACTIVE SYNTHESIS
+                        </span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant font-bold">SESSION #{{ session_id[:8] }}</span>
+                    </div>
+                    <h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-tight mt-1 font-bold">Write Your Summary</h2>
+                </div>
+                <div class="flex items-center gap-space-xs font-label-sm text-label-sm bg-surface-container border-[2px] border-[#0E1013] px-space-sm py-space-xs">
+                    <span class="material-symbols-outlined text-[18px] text-error">delete_forever</span>
+                    <span class="font-bold text-on-surface">SOURCE PURGED FROM DOM</span>
+                </div>
+            </div>
+
+            <!-- Instruction Callout Card -->
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex">
+                <div class="w-3 bg-secondary-container border-r-[3px] border-[#0E1013] shrink-0"></div>
+                <div class="p-space-md flex flex-col gap-space-xs w-full">
+                    <div class="flex items-center gap-space-xs">
+                        <span class="material-symbols-outlined text-[18px] text-secondary">psychology</span>
+                        <span class="font-label-md text-label-md font-bold uppercase text-on-surface">Memory Retrieval Mandate</span>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface leading-normal">
+                        The article text for "<strong>{{ article_title }}</strong>" has been permanently purged. Write a summary from memory in your own words. Focus on:
+                        <strong>1)</strong> What the key concepts are, 
+                        <strong>2)</strong> How they operate technically, and 
+                        <strong>3)</strong> Why they matter.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Main Textarea Editor Area -->
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                <div class="flex items-center justify-between border-b-[2px] border-[#0E1013] pb-space-sm">
+                    <label class="font-label-md text-label-md font-bold uppercase text-on-surface flex items-center gap-space-xs" for="summary-input">
+                        <span class="material-symbols-outlined text-[18px]">edit_note</span> Student Response Slate
+                    </label>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-bold">MONITORED INPUT STREAM</span>
+                </div>
+
+                <!-- Large Brutalist Textarea -->
+                <div class="relative w-full">
+                    <textarea class="w-full bg-surface-container-lowest border-[3px] border-[#0E1013] p-space-md font-body-md text-body-md text-on-surface focus:outline-none focus:border-[#0E1013] focus:shadow-[4px_4px_0px_#2A52BE] transition-shadow resize-y"
+                              id="summary-input"
+                              placeholder="Write your summary here. Explain the key concepts, how they work, and why they matter…"
+                              rows="9"
+                              aria-label="Your summary"></textarea>
+                </div>
+
+                <!-- Real-Time Live Word Counter Scale -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md pt-space-xs">
+                    <!-- Counter Badge & Threshold Indicator -->
+                    <div class="flex flex-wrap items-center gap-space-sm">
+                        <div class="bg-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold text-on-surface shadow-[2px_2px_0px_#0E1013]" id="word-counter">
+                            <span class="font-bold" id="word-count-val">0</span> WORDS
+                        </div>
+                        <div id="word-threshold-badge" class="bg-[#FFEAEA] border-[2px] border-[#FF334B] text-[#ba1a1a] px-space-sm py-space-xs font-label-sm text-label-sm font-bold flex items-center gap-space-xs shadow-[2px_2px_0px_#0E1013]">
+                            <span class="material-symbols-outlined text-[16px]">info</span>
+                            <span id="word-threshold-text">&lt; 15 words: Too short to evaluate</span>
+                        </div>
+                    </div>
+
+                    <!-- Scale Legend -->
+                    <div class="flex items-center gap-space-xs bg-surface-container border-[2px] border-[#0E1013] p-space-xs">
+                        <span class="font-label-sm text-label-sm font-bold text-on-surface uppercase px-1">Scale:</span>
+                        <span class="bg-[#FFEAEA] text-error font-label-sm text-label-sm px-1.5 py-0.5 border border-error font-bold">&lt;15 Short</span>
+                        <span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-1.5 py-0.5 border border-[#0E1013] font-bold">15-29 Amber</span>
+                        <span class="bg-[#E8F8EE] text-[#004e1c] font-label-sm text-label-sm px-1.5 py-0.5 border border-[#00C853] font-bold">30+ Green</span>
+                    </div>
+                </div>
+
+                <!-- Validation Error Alert Banner Box -->
+                <div id="submit-error" style="display: none;" class="bg-[#FFEAEA] border-[3px] border-[#FF334B] p-space-md shadow-[4px_4px_0px_#0E1013] flex items-start gap-space-sm">
+                    <span class="material-symbols-outlined text-[20px] text-[#FF334B] shrink-0">error</span>
+                    <div class="font-body-sm text-body-sm text-on-surface" id="submit-error-msg"></div>
+                </div>
+
+                <!-- Submit Actions & Simulated Pipeline Runner -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-sm border-t-[2px] border-[#0E1013]">
+                    <div id="submit-status-info" class="flex items-center gap-space-sm bg-surface-container border-[2px] border-[#0E1013] px-space-md py-space-sm w-full sm:w-auto">
+                        <span class="font-label-sm text-label-sm font-bold text-on-surface">
+                            ⚙️ Ready for hybrid LLM rubric grader...
+                        </span>
+                    </div>
+
+                    <!-- Loading State Spinner -->
+                    <div id="submit-loading" style="display: none;" class="flex items-center gap-space-sm bg-surface-container border-[2px] border-[#0E1013] px-space-md py-space-sm w-full sm:w-auto">
+                        <div class="w-4 h-4 bg-primary border-[2px] border-[#0E1013] animate-spin shrink-0"></div>
+                        <span class="font-label-sm text-label-sm font-bold text-on-surface">
+                            Analysing your summary via Jev + LLM…
+                        </span>
+                    </div>
+
+                    <!-- Primary Electric Cobalt Submit Button -->
+                    <button id="submit-btn" onclick="submitSummary()" class="w-full sm:w-auto bg-primary-container text-on-primary border-[3px] border-[#0E1013] py-space-md px-space-xl font-label-lg text-label-lg font-bold uppercase tracking-wider shadow-[6px_6px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_#0E1013] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none transition-all flex items-center justify-center gap-space-sm">
+                        <span>Submit Summary</span>
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- STATE C: RESULT PANEL (AI COMPREHENSION FEEDBACK & BREAKDOWN)              -->
+        <!-- ========================================================================= -->
+        <section class="assessment-panel {% if has_attempt %}flex{% else %}hidden{% endif %} flex-col gap-space-lg w-full" id="panel-state-c">
+            <!-- Server-Rendered Result Container (if existing attempt) -->
+            {% if has_attempt and attempt %}
+            <div class="flex flex-col gap-space-lg w-full">
+                <!-- Session Result Header -->
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-md flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+                    <div>
+                        <div class="flex items-center gap-space-sm">
+                            <span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold px-space-sm py-space-xs border-[2px] border-[#0E1013] shadow-[2px_2px_0px_#0E1013]">
+                                EVALUATION COMPLETED • SOURCE: {{ attempt.source|upper }}
+                            </span>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant font-bold">SESSION #{{ session_id[:8] }}</span>
+                        </div>
+                        <h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-tight mt-1 font-bold">AI Comprehension Evaluation Matrix</h2>
+                    </div>
+                    <a href="/" class="bg-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase text-on-surface shadow-[3px_3px_0px_#0E1013] hover:bg-surface-container transition-colors flex items-center gap-space-xs">
+                        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                        <span>← Try Another Article</span>
+                    </a>
+                </div>
+
+                <!-- Top Scoring Tier Bento Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-space-lg">
+                    <!-- Score Card 1: Massive Geometric Score Card (5 Cols) -->
+                    <div class="md:col-span-5 bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b-[2px] border-[#0E1013] pb-space-sm">
+                            <span class="font-label-sm text-label-sm font-bold uppercase text-on-surface">Comprehension Index</span>
+                            <span class="bg-primary text-on-primary font-label-sm text-label-sm font-bold px-space-sm py-0.5 border border-[#0E1013]">CALCULATED</span>
+                        </div>
+                        <div class="py-space-md flex items-baseline gap-space-sm">
+                            <span class="font-display text-display font-extrabold text-on-surface tracking-tighter leading-none">{{ attempt.rating }}</span>
+                            <span class="font-headline-sm text-headline-sm font-bold text-on-surface-variant uppercase">/ 10</span>
+                        </div>
+                        <div class="flex flex-col gap-space-sm pt-space-xs border-t-[2px] border-[#0E1013]">
+                            <div class="flex items-center justify-between">
+                                <span class="font-label-sm text-label-sm font-bold text-on-surface uppercase">Qualitative Rating:</span>
+                                <span class="{% if attempt.rating >= 9 %}bg-[#00C853] text-[#ffffff]{% elif attempt.rating >= 7 %}bg-primary-container text-on-primary{% elif attempt.rating >= 5 %}bg-secondary-container text-on-secondary-container{% elif attempt.rating >= 3 %}bg-[#FF9F1C] text-[#0E1013]{% else %}bg-error text-on-error{% endif %} font-label-sm text-label-sm font-bold px-space-md py-space-xs border-[2px] border-[#0E1013] shadow-[2px_2px_0px_#0E1013]">
+                                    {% if attempt.rating >= 9 %}OUTSTANDING{% elif attempt.rating >= 7 %}GOOD{% elif attempt.rating >= 5 %}AVERAGE{% elif attempt.rating >= 3 %}BELOW AVERAGE{% else %}NEEDS IMPROVEMENT{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Score Card 2: AI Evaluator Qualitative Synthesis Card (7 Cols) -->
+                    <div class="md:col-span-7 bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] flex flex-col">
+                        <div class="bg-secondary-container border-b-[3px] border-[#0E1013] px-space-lg py-space-sm flex items-center justify-between">
+                            <div class="flex items-center gap-space-xs font-label-md text-label-md font-bold uppercase text-on-secondary-container">
+                                <span class="material-symbols-outlined text-[20px]">lightbulb</span>
+                                <span>Hybrid AI Evaluator Feedback</span>
+                            </div>
+                            <span class="font-label-sm text-label-sm font-bold bg-surface-container-lowest px-space-xs border border-[#0E1013]">LLM-RUBRIC-V4</span>
+                        </div>
+                        <div class="p-space-lg flex flex-col justify-between h-full gap-space-md">
+                            <p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                                “{{ attempt.feedback }}”
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Point-by-Point Breakdown: Covered Points & Areas to Improve -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+                    <!-- Column 1: Covered Points (Shamrock Green Theme) -->
+                    <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                        <div class="flex items-center justify-between border-b-[3px] border-[#00C853] pb-space-sm">
+                            <span class="font-headline-sm text-headline-sm text-[#006928] uppercase font-bold flex items-center gap-space-xs">
+                                <span class="material-symbols-outlined text-[#006928] text-[22px]">check_circle</span>
+                                ✓ Covered Points ({{ attempt.covered|length }})
+                            </span>
+                        </div>
+                        <div class="flex flex-col gap-space-sm">
+                            {% for point in attempt.covered %}
+                            <div class="bg-[#E8F8EE] border-[3px] border-[#0E1013] shadow-[3px_3px_0px_#0E1013] p-space-md font-body-sm text-body-sm text-on-surface">
+                                <strong>✓ Concept covered:</strong> {{ point }}
+                            </div>
+                            {% else %}
+                            <p class="font-body-sm text-on-surface-variant italic">No rubric points marked as fully covered.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Missed Points / Areas to Improve (Punch Coral Red Theme) -->
+                    <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                        <div class="flex items-center justify-between border-b-[3px] border-[#FF334B] pb-space-sm">
+                            <span class="font-headline-sm text-headline-sm text-[#ba1a1a] uppercase font-bold flex items-center gap-space-xs">
+                                <span class="material-symbols-outlined text-[#ba1a1a] text-[22px]">cancel</span>
+                                ✗ Areas to Improve ({{ attempt.missed|length }})
+                            </span>
+                        </div>
+                        <div class="flex flex-col gap-space-sm">
+                            {% for point in attempt.missed %}
+                            <div class="bg-[#FFEAEA] border-[3px] border-[#0E1013] shadow-[3px_3px_0px_#0E1013] p-space-md font-body-sm text-body-sm text-on-surface">
+                                <strong>✗ Missed or incomplete:</strong> {{ point }}
+                            </div>
+                            {% else %}
+                            <div class="bg-[#E8F8EE] border-[2px] border-[#00C853] p-space-md font-body-sm font-bold text-[#006928]">
+                                ✓ Excellent! No major conceptual points were omitted.
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Verification Flags Bar -->
+                {% if attempt.flags %}
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-md flex flex-col gap-space-xs">
+                    <span class="font-label-sm text-label-sm font-bold uppercase text-on-surface">Automated Proctoring &amp; Quality Audit Flags:</span>
+                    <div class="flex flex-wrap items-center gap-space-sm">
+                        {% for flag in attempt.flags %}
+                        <span class="bg-secondary-container border-[2px] border-[#0E1013] px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-on-secondary-container shadow-[2px_2px_0px_#0E1013]">
+                            ⚠ {{ flag|replace('_', ' ')|upper }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Dynamic Result Container (Filled by JavaScript after live AJAX submission) -->
+            <div id="result-dynamic" class="flex flex-col gap-space-lg w-full"></div>
+        </section>
+
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='app.js') }}"></script>
+{% endblock %}
