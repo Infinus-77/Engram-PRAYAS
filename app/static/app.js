@@ -344,10 +344,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-tight mt-1 font-bold">AI Comprehension Evaluation Matrix</h2>
                 </div>
-                <a href="/" class="bg-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase text-on-surface shadow-[3px_3px_0px_#0E1013] hover:bg-surface-container transition-colors flex items-center gap-space-xs">
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-                    <span>← Try Another Article</span>
-                </a>
+                <div class="flex flex-wrap items-center gap-space-sm">
+                    <a href="/sessions/${escapeHtml(sessionId)}/certificate" target="_blank" download class="bg-primary text-on-primary border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase shadow-[3px_3px_0px_#0E1013] hover:bg-primary-container hover:text-on-primary hover:shadow-[5px_5px_0px_#0E1013] transition-all flex items-center gap-space-xs">
+                        <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                        <span>DOWNLOAD AUDIT CERTIFICATE (PDF)</span>
+                    </a>
+                    <a href="/" class="bg-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase text-on-surface shadow-[3px_3px_0px_#0E1013] hover:bg-surface-container transition-colors flex items-center gap-space-xs">
+                        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                        <span>← Try Another Article</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Top Scoring Tier Bento Grid -->
@@ -445,6 +451,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>`;
 
+        // Feature 5: Socratic Follow-Up Interrogation (Dynamic)
+        if (missed.length > 0) {
+            html += `
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b-[3px] border-[#0E1013] pb-space-sm gap-space-sm">
+                    <div class="flex items-center gap-space-sm">
+                        <span class="inline-flex items-center justify-center w-8 h-8 bg-secondary-container text-on-secondary-container border-[2px] border-[#0E1013] font-bold">
+                            <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
+                        </span>
+                        <div>
+                            <h3 class="font-headline-sm text-headline-sm uppercase font-bold text-on-surface">SOCRATIC RETRIEVAL INTERROGATION</h3>
+                            <p class="font-label-sm text-label-sm text-on-surface-variant font-medium">Targeting ${missed.length} missed concepts to reinforce retrieval pathways</p>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-load-socratic" onclick="loadSocraticQuestions('${escapeHtml(sessionId)}')" class="bg-secondary-container text-on-secondary-container border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase shadow-[2px_2px_0px_#0E1013] hover:shadow-[4px_4px_0px_#0E1013] transition-all flex items-center gap-space-xs self-start md:self-auto">
+                        <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                        <span>START SOCRATIC DRILL</span>
+                    </button>
+                </div>
+                <div id="socratic-content-${escapeHtml(sessionId)}" class="flex flex-col gap-space-md">
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Click <strong>Start Socratic Drill</strong> above to generate targeted comprehension questions focused strictly on the concepts you missed.</p>
+                </div>
+            </div>`;
+        }
+
         // System Flags Bar
         if (flags.length > 0) {
             html += `
@@ -502,4 +533,164 @@ document.addEventListener("DOMContentLoaded", () => {
         div.textContent = text;
         return div.innerHTML;
     }
+    window.escapeHtml = escapeHtml;
 });
+
+// ── Feature 5: Socratic Follow-Up Interrogation Global Handlers ──
+window.loadSocraticQuestions = async function(sessionId) {
+    const container = document.getElementById(`socratic-content-${sessionId}`) || document.querySelector('[id^="socratic-content-"]');
+    const btn = document.getElementById("btn-load-socratic");
+    if (!container) return;
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="inline-block animate-spin material-symbols-outlined text-[18px]">progress_activity</span> <span>SYNTHESIZING QUESTIONS...</span>`;
+    }
+
+    try {
+        const resp = await fetch(`/sessions/${encodeURIComponent(sessionId)}/followup`);
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.detail || `Failed to generate questions (${resp.status})`);
+        }
+        const data = await resp.json();
+        const questions = data.questions || [];
+
+        if (questions.length === 0) {
+            container.innerHTML = `
+                <div class="bg-[#E8F8EE] border-[2px] border-[#00C853] p-space-md font-body-sm font-bold text-[#006928] flex items-center gap-space-sm">
+                    <span class="material-symbols-outlined text-[20px]">verified</span>
+                    <span>All rubric key points were successfully covered. Socratic reinforcement not required!</span>
+                </div>`;
+            if (btn) btn.style.display = "none";
+            return;
+        }
+
+        let qHtml = `<div class="flex flex-col gap-space-md">`;
+        questions.forEach((q, idx) => {
+            const escapedQ = window.escapeHtml(q.question);
+            const escapedHint = window.escapeHtml(q.hint || "");
+            const escapedConcept = window.escapeHtml(q.target_concept || "");
+            qHtml += `
+            <div id="socratic-card-${idx}" class="bg-surface-container border-[2px] border-[#0E1013] p-space-md flex flex-col gap-space-sm shadow-[3px_3px_0px_#0E1013]">
+                <div class="flex flex-wrap items-center justify-between gap-space-xs">
+                    <span class="bg-primary text-on-primary font-label-sm text-label-sm font-bold px-space-xs py-0.5 border border-[#0E1013]">
+                        PROMPT ${idx + 1} OF ${questions.length}
+                    </span>
+                    <span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold px-space-xs py-0.5 border border-[#0E1013]">
+                        MISSED CONCEPT: ${escapedConcept}
+                    </span>
+                </div>
+
+                <p class="font-body-md text-body-md font-bold text-on-surface leading-snug">
+                    ${escapedQ}
+                </p>
+
+                ${escapedHint ? `
+                <details class="cursor-pointer font-label-sm text-label-sm text-on-surface-variant">
+                    <summary class="font-bold text-primary flex items-center gap-1 hover:underline">
+                        <span class="material-symbols-outlined text-[16px]">lightbulb</span> Reveal Socratic Guiding Hint
+                    </summary>
+                    <p class="mt-1 p-space-xs bg-surface-container-lowest border border-[#0E1013] text-on-surface italic">
+                        ${escapedHint}
+                    </p>
+                </details>` : ''}
+
+                <div class="mt-space-xs flex flex-col gap-space-xs">
+                    <textarea id="socratic-input-${idx}" rows="2" class="w-full bg-surface-container-lowest border-[2px] border-[#0E1013] p-space-sm font-body-sm text-body-sm text-on-surface focus:outline-none focus:shadow-[3px_3px_0px_#2A52BE] transition-shadow resize-y" placeholder="Demonstrate your comprehension of this concept in your own words..."></textarea>
+                    
+                    <div class="flex items-center justify-between pt-space-xs">
+                        <button type="button" onclick="submitFollowupAnswer('${sessionId}', ${idx})" id="socratic-btn-${idx}" class="bg-primary text-on-primary border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase shadow-[2px_2px_0px_#0E1013] hover:shadow-[4px_4px_0px_#0E1013] transition-all flex items-center gap-space-xs">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            <span>SUBMIT FOR SOCRATIC ASSESSMENT</span>
+                        </button>
+                    </div>
+
+                    <div id="socratic-result-${idx}" class="hidden mt-space-xs"></div>
+                </div>
+            </div>`;
+        });
+        qHtml += `</div>`;
+        container.innerHTML = qHtml;
+
+        // Store active questions array for answer submission lookups
+        window._activeSocraticQuestions = questions;
+        if (btn) btn.style.display = "none";
+
+    } catch (err) {
+        container.innerHTML = `
+            <div class="bg-[#FFEAEA] border-[2px] border-error p-space-sm font-label-sm text-label-sm text-error font-bold flex items-center gap-space-xs">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                <span>Could not load Socratic questions: ${window.escapeHtml(err.message)}</span>
+            </div>`;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">refresh</span> <span>RETRY SOCRATIC DRILL</span>`;
+        }
+    }
+};
+
+window.submitFollowupAnswer = async function(sessionId, idx) {
+    const input = document.getElementById(`socratic-input-${idx}`);
+    const btn = document.getElementById(`socratic-btn-${idx}`);
+    const resultBox = document.getElementById(`socratic-result-${idx}`);
+    const answer = input ? input.value.trim() : "";
+
+    if (!answer) {
+        alert("Please write your answer before submitting.");
+        return;
+    }
+
+    const questionObj = (window._activeSocraticQuestions && window._activeSocraticQuestions[idx]) || {};
+    const questionText = questionObj.question || "";
+    const targetConcept = questionObj.target_concept || "";
+
+    btn.disabled = true;
+    btn.innerHTML = `<span class="inline-block animate-spin material-symbols-outlined text-[16px]">progress_activity</span> <span>EVALUATING RETRIEVAL...</span>`;
+
+    try {
+        const resp = await fetch(`/sessions/${encodeURIComponent(sessionId)}/followup/answer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question: questionText,
+                target_concept: targetConcept,
+                answer: answer
+            })
+        });
+
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.detail || `Evaluation failed (${resp.status})`);
+        }
+
+        const data = await resp.json();
+        const score = data.score || 1;
+        const correct = data.correct || false;
+        const explanation = data.explanation || "";
+
+        const borderCol = correct ? "border-[#00C853] bg-[#E8F8EE]" : "border-[#FF334B] bg-[#FFEAEA]";
+        const badgeCol = correct ? "bg-[#00C853] text-[#ffffff]" : "bg-error text-on-error";
+        const statusText = correct ? "CONCEPT CONSOLIDATED ✓" : "RECALL INCOMPLETE ✗";
+
+        resultBox.className = `border-[2px] ${borderCol} p-space-md flex flex-col gap-space-xs shadow-[2px_2px_0px_#0E1013]`;
+        resultBox.innerHTML = `
+            <div class="flex items-center justify-between">
+                <span class="${badgeCol} font-label-sm text-label-sm font-bold px-space-xs py-0.5 border border-[#0E1013]">
+                    SCORE: ${score} / 5 • ${statusText}
+                </span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface mt-1">
+                <strong>Pedagogical Feedback:</strong> ${window.escapeHtml(explanation)}
+            </p>
+        `;
+        resultBox.classList.remove("hidden");
+        btn.style.display = "none";
+        if (input) input.disabled = true;
+
+    } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">check_circle</span> <span>SUBMIT FOR SOCRATIC ASSESSMENT</span>`;
+        alert(`Evaluation error: ${err.message}`);
+    }
+};

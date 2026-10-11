@@ -44,3 +44,30 @@ class Attempt(BaseModel):
     jev_cost: float | None = None
     llm_cost: float | None = None
     latency_ms: int | None = None
+
+
+class FollowUpQuestion(BaseModel):
+    """A single Socratic follow-up question targeting a missed concept."""
+    question: str
+    hint: str
+    target_concept: str
+
+
+class FollowUpSession(BaseModel):
+    """Stores the follow-up questions and student answers for a session."""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str
+    questions: list[dict] = Field(default_factory=list)
+    answers: list[dict] = Field(default_factory=list)   # [{answer, score, correct, explanation}]
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
+class ImportedArticle(BaseModel):
+    """Temporary model for a user-imported article (not yet persisted)."""
+    title: str
+    text: str
+    word_count: int = 0
+    source: str = "upload"   # "upload" | "url"
+    source_url: str | None = None
+    page_count: int | None = None
+

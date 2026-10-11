@@ -382,10 +382,16 @@
                         </div>
                         <h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-tight mt-1 font-bold">AI Comprehension Evaluation Matrix</h2>
                     </div>
-                    <a href="/" class="bg-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase text-on-surface shadow-[3px_3px_0px_#0E1013] hover:bg-surface-container transition-colors flex items-center gap-space-xs">
-                        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-                        <span>← Try Another Article</span>
-                    </a>
+                    <div class="flex flex-wrap items-center gap-space-sm">
+                        <a href="/sessions/{{ session_id }}/certificate" target="_blank" download class="bg-primary text-on-primary border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase shadow-[3px_3px_0px_#0E1013] hover:bg-primary-container hover:text-on-primary hover:shadow-[5px_5px_0px_#0E1013] transition-all flex items-center gap-space-xs">
+                            <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                            <span>DOWNLOAD AUDIT CERTIFICATE (PDF)</span>
+                        </a>
+                        <a href="/" class="bg-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase text-on-surface shadow-[3px_3px_0px_#0E1013] hover:bg-surface-container transition-colors flex items-center gap-space-xs">
+                            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                            <span>← Try Another Article</span>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Top Scoring Tier Bento Grid -->
@@ -467,8 +473,31 @@
                             </div>
                             {% endfor %}
                         </div>
+                </div>
+
+                <!-- Feature 5: Socratic Follow-Up Interrogation (Server-Rendered) -->
+                {% if attempt.missed %}
+                <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b-[3px] border-[#0E1013] pb-space-sm gap-space-sm">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="inline-flex items-center justify-center w-8 h-8 bg-secondary-container text-on-secondary-container border-[2px] border-[#0E1013] font-bold">
+                                <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
+                            </span>
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm uppercase font-bold text-on-surface">SOCRATIC RETRIEVAL INTERROGATION</h3>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant font-medium">Targeting {{ attempt.missed|length }} missed concepts to reinforce retrieval pathways</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-load-socratic" onclick="loadSocraticQuestions('{{ session_id }}')" class="bg-secondary-container text-on-secondary-container border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold uppercase shadow-[2px_2px_0px_#0E1013] hover:shadow-[4px_4px_0px_#0E1013] transition-all flex items-center gap-space-xs self-start md:self-auto">
+                            <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                            <span>START SOCRATIC DRILL</span>
+                        </button>
+                    </div>
+                    <div id="socratic-content-{{ session_id }}" class="flex flex-col gap-space-md">
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">Click <strong>Start Socratic Drill</strong> above to generate targeted comprehension questions focused strictly on the concepts you missed.</p>
                     </div>
                 </div>
+                {% endif %}
 
                 <!-- System Verification Flags Bar -->
                 {% if attempt.flags %}

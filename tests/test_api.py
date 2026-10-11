@@ -117,3 +117,115 @@ def test_submit_valid_scored_with_api_pipeline(client):
     assert attempt.confidence == 0.92
     assert attempt.jev_cost == 0.0018
     assert attempt.llm_cost == 0.0006
+
+
+def test_create_and_start_custom_article(client):
+    """Test Feature 6: Creating a custom article and launching a reading session."""
+    payload = {
+        "title": "Quantum Error Correction Primer",
+        "text": (
+            "Quantum error correction protects quantum information from errors caused by decoherence "
+            "and other quantum noise. Quantum error correction is essential to achieve fault-tolerant "
+            "quantum computation that can reduce the addition of noise on stored quantum information, "
+            "fault-tolerant quantum gates, and fault-tolerant state preparation. Classical error correcting "
+            "codes use redundancy. The simplest way is to store the information multiple times, and if "
+            "these copies are later found to disagree, take a majority vote."
+        ),
+    }
+    response = client.post("/articles/create-and-start", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    assert "session_id" in data
+    assert data["redirect_url"].startswith("/sessions/")
+
+    # Check session page
+    view_res = client.get(data["redirect_url"])
+    assert view_res.status_code == 200
+    assert "Quantum Error Correction Primer" in view_res.text
+
+
+def test_certificate_download_and_socratic_followup(client):
+    """Test Features 5 & 7: Certificate PDF download and Socratic follow-up interrogation."""
+    # 1. Create a session and submit a scored attempt
+    articles = list_articles()
+    article = articles[0]
+    session_res = client.post("/sessions", data={"article_id": article.id}, follow_redirects=False)
+    session_id = session_res.headers["location"].split("/")[-1]
+
+    # Advance timer past reading window
+    session = ReadingSession(
+        id=session_id,
+        article_id=article.id,
+        started_at=datetime.now(UTC) - timedelta(seconds=80),
+        read_seconds=75,
+        text_served=True,
+    )
+    save_session(session)
+
+    mock_scoring = {
+        "rating": 7,
+        "jev_score_raw": 6.8,
+        "confidence": 0.88,
+        "covered": ["Key concept 1"],
+        "missed": ["Omitted concept 2", "Incomplete mechanism 3"],
+        "feedback": "Solid comprehension with some missing nuances.",
+        "flags": [],
+        "source": "jev",
+        "jev_cost": 0.0015,
+        "llm_cost": 0.0005,
+        "latency_ms": 720,
+    }
+
+    with patch("app.main.score_summary", new_callable=AsyncMock) as mock_score:
+        mock_score.return_value = mock_scoring
+        sub_res = client.post(
+            f"/sessions/{session_id}/submit",
+            json={"summary": "An accurate review of the key concept 1 with solid technical detail."},
+        )
+        assert sub_res.status_code == 200
+
+    # 2. Test Feature 7: Download Certificate PDF
+    cert_res = client.get(f"/sessions/{session_id}/certificate")
+    assert cert_res.status_code == 200
+    assert cert_res.headers["content-type"] == "application/pdf"
+    assert len(cert_res.content) > 1000
+    assert cert_res.content[:4] == b"%PDF"
+
+    # 3. Test Feature 5: Socratic Follow-Up Generation
+    mock_questions = [
+        {
+            "question": "Can you explain how omitted concept 2 operates?",
+            "hint": "Recall the underlying mechanism.",
+            "target_concept": "Omitted concept 2",
+        }
+    ]
+    with patch("app.main.generate_followup_questions", new_callable=AsyncMock) as mock_fq:
+        mock_fq.return_value = mock_questions
+        fq_res = client.get(f"/sessions/{session_id}/followup")
+        assert fq_res.status_code == 200
+        fq_data = fq_res.json()
+        assert len(fq_data["questions"]) == 1
+        assert fq_data["questions"][0]["target_concept"] == "Omitted concept 2"
+
+    # 4. Test Feature 5: Evaluate Socratic Follow-Up Answer
+    mock_eval = {
+        "score": 4,
+        "correct": True,
+        "explanation": "Great explanation demonstrating clear understanding.",
+    }
+    with patch("app.main.evaluate_followup_answer", new_callable=AsyncMock) as mock_ea:
+        mock_ea.return_value = mock_eval
+        ans_res = client.post(
+            f"/sessions/{session_id}/followup/answer",
+            json={
+                "question": "Can you explain how omitted concept 2 operates?",
+                "target_concept": "Omitted concept 2",
+                "answer": "It operates through deterministic collision resolution chaining.",
+            },
+        )
+        assert ans_res.status_code == 200
+        ans_data = ans_res.json()
+        assert ans_data["score"] == 4
+        assert ans_data["correct"] is True
+

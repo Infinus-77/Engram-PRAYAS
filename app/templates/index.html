@@ -41,8 +41,12 @@
             <!-- Action Buttons -->
             <div class="flex flex-wrap items-center gap-space-md pt-space-sm">
                 <a class="inline-flex items-center gap-space-sm bg-primary-container text-on-primary font-label-lg text-label-lg uppercase tracking-wider px-space-lg py-space-md border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0E1013] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none transition-transform" href="#article-catalog">
-                    <span>EXPLORE AVAILABLE ARTICLES ↓</span>
+                    <span>EXPLORE BENCHMARKED ARTICLES ↓</span>
                     <span class="material-symbols-outlined text-[20px]">arrow_downward</span>
+                </a>
+                <a class="inline-flex items-center gap-space-sm bg-secondary-container text-on-secondary-container font-label-lg text-label-lg uppercase tracking-wider px-space-lg py-space-md border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0E1013] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none transition-transform" href="#custom-import">
+                    <span class="material-symbols-outlined text-[20px]">upload_file</span>
+                    <span>IMPORT YOUR OWN PDF / URL ⚡</span>
                 </a>
                 <a class="inline-flex items-center gap-space-sm bg-surface-container-lowest text-on-surface font-label-lg text-label-lg uppercase tracking-wider px-space-lg py-space-md border-[3px] border-[#0E1013] shadow-[5px_5px_0px_#0E1013] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0E1013] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none transition-transform" href="#how-it-works">
                     <span class="material-symbols-outlined text-[20px]">psychology</span>
@@ -358,6 +362,127 @@
     </section>
 
     <!-- ========================================================================= -->
+    <!-- SECTION 4.5: CUSTOM INGESTION LAB (FEATURE 6: PDF & URL IMPORTER)        -->
+    <!-- ========================================================================= -->
+    <section class="w-full bg-[#F0EFEA] border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl" id="custom-import">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+            <!-- Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md pb-space-sm border-b-[3px] border-[#0E1013]">
+                <div class="flex flex-col gap-space-xs">
+                    <div class="flex items-center gap-space-sm">
+                        <span class="inline-flex items-center justify-center w-7 h-7 bg-secondary-container text-on-secondary-container border-[2px] border-[#0E1013] font-bold">
+                            <span class="material-symbols-outlined text-[18px]">publish</span>
+                        </span>
+                        <h2 class="font-headline-lg text-headline-lg uppercase text-[#0E1013] font-bold">CUSTOM INGESTION LAB</h2>
+                        <span class="border-[2px] border-[#0E1013] bg-primary text-on-primary px-space-sm py-space-xs font-label-md text-label-md font-bold shadow-[2px_2px_0px_#0E1013]">
+                            NEW CAPABILITY
+                        </span>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                        Assess yourself on your own curriculum. Upload any textbook chapter, academic paper (PDF), or paste a web article URL. ENGRAM synthesizes a real-time rubric and launches a 75-second active recall harness.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Ingestion Box: Tabs & Inputs -->
+            <div class="bg-surface-container-lowest border-[3px] border-[#0E1013] shadow-[6px_6px_0px_#0E1013] p-space-lg flex flex-col gap-space-md">
+                <!-- Source Tabs -->
+                <div class="flex flex-wrap items-center gap-space-xs border-b-[2px] border-[#0E1013] pb-space-sm">
+                    <button type="button" id="tab-import-pdf" onclick="switchImportTab('pdf')" class="bg-[#0E1013] text-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold shadow-[2px_2px_0px_#0E1013] flex items-center gap-space-xs transition-all">
+                        <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                        <span>UPLOAD PDF DOCUMENT</span>
+                    </button>
+                    <button type="button" id="tab-import-url" onclick="switchImportTab('url')" class="bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] flex items-center gap-space-xs transition-all">
+                        <span class="material-symbols-outlined text-[18px]">link</span>
+                        <span>IMPORT FROM WEB URL</span>
+                    </button>
+                </div>
+
+                <!-- PDF Mode Panel -->
+                <div id="panel-import-pdf" class="flex flex-col gap-space-md">
+                    <div id="pdf-dropzone" class="border-[3px] border-dashed border-[#0E1013] bg-[#F7F5EE] p-space-xl flex flex-col items-center justify-center text-center gap-space-sm cursor-pointer hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[48px] text-primary">cloud_upload</span>
+                        <p class="font-headline-sm text-headline-sm font-bold uppercase text-on-surface">DRAG &amp; DROP PDF FILE HERE OR CLICK TO BROWSE</p>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">Supports technical papers, textbook excerpts, lecture slides (Max 10 MB, text-based)</p>
+                        <input type="file" id="pdf-file-picker" accept=".pdf" class="hidden" onchange="handlePdfSelected(event)">
+                        <div id="pdf-selected-badge" class="hidden mt-space-xs bg-primary text-on-primary border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-sm text-label-sm font-bold"></div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Automatic text extraction via <code>pypdf</code></span>
+                        <button type="button" id="btn-extract-pdf" onclick="extractPdf()" class="bg-primary text-on-primary border-[3px] border-[#0E1013] px-space-lg py-space-sm font-label-md text-label-md font-bold uppercase shadow-[4px_4px_0px_#0E1013] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[6px_6px_0px_#0E1013] active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center gap-space-xs">
+                            <span class="material-symbols-outlined text-[20px]">manage_search</span>
+                            <span>EXTRACT PDF CONTENT</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Web URL Mode Panel -->
+                <div id="panel-import-url" class="hidden flex-col gap-space-md">
+                    <div class="flex flex-col gap-space-xs">
+                        <label for="url-input" class="font-label-md text-label-md font-bold uppercase text-on-surface flex items-center gap-space-xs">
+                            <span class="material-symbols-outlined text-[18px]">travel_explore</span>
+                            <span>TARGET WEB ARTICLE URL</span>
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-space-sm">
+                            <input type="url" id="url-input" placeholder="https://en.wikipedia.org/wiki/Fast_Fourier_transform or blog URL..." class="flex-1 bg-surface-container-lowest border-[3px] border-[#0E1013] p-space-md font-body-md text-body-md text-on-surface focus:outline-none focus:shadow-[4px_4px_0px_#2A52BE] transition-shadow">
+                            <button type="button" id="btn-fetch-url" onclick="fetchUrl()" class="bg-primary text-on-primary border-[3px] border-[#0E1013] px-space-lg py-space-sm font-label-md text-label-md font-bold uppercase shadow-[4px_4px_0px_#0E1013] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[6px_6px_0px_#0E1013] active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center justify-center gap-space-xs">
+                                <span class="material-symbols-outlined text-[20px]">downloading</span>
+                                <span>FETCH &amp; EXTRACT</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant font-medium">Extracts main article body via async crawler, stripping navigation, ads, and JavaScript.</p>
+                </div>
+
+                <!-- Loading Spinner Banner -->
+                <div id="import-loading" class="hidden bg-secondary-container border-[3px] border-[#0E1013] p-space-md shadow-[4px_4px_0px_#0E1013] flex items-center gap-space-sm">
+                    <span class="inline-block animate-spin material-symbols-outlined text-[24px] text-on-secondary-container">progress_activity</span>
+                    <span id="import-loading-text" class="font-label-md text-label-md font-bold uppercase text-on-secondary-container">Processing document...</span>
+                </div>
+
+                <!-- Error Banner -->
+                <div id="import-error" class="hidden bg-[#FFEAEA] border-[3px] border-[#FF334B] p-space-md shadow-[4px_4px_0px_#0E1013] flex items-start gap-space-sm">
+                    <span class="material-symbols-outlined text-[20px] text-[#FF334B] shrink-0">error</span>
+                    <div class="font-body-sm text-body-sm text-on-surface font-bold" id="import-error-msg"></div>
+                </div>
+
+                <!-- Extracted Article Preview Slate -->
+                <div id="import-preview-slate" class="hidden border-[3px] border-[#0E1013] bg-surface-container-lowest shadow-[6px_6px_0px_#0E1013] p-space-lg flex-col gap-space-md">
+                    <div class="flex flex-wrap items-center justify-between border-b-[2px] border-[#0E1013] pb-space-sm gap-space-sm">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="bg-[#E8F8EE] text-[#004e1c] border-[2px] border-[#00C853] px-space-sm py-space-xs font-label-sm text-label-sm font-bold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                <span>READY FOR RETRIEVAL ASSESSMENT</span>
+                            </span>
+                            <span id="preview-word-badge" class="bg-secondary-container text-on-secondary-container border-[2px] border-[#0E1013] px-space-sm py-space-xs font-label-sm text-label-sm font-bold"></span>
+                            <span id="preview-source-badge" class="bg-surface-container border-[2px] border-[#0E1013] px-space-sm py-space-xs font-label-sm text-label-sm font-bold uppercase"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-space-xs">
+                        <label for="preview-title-input" class="font-label-sm text-label-sm font-bold uppercase text-on-surface">DOCUMENT TITLE (EDITABLE):</label>
+                        <input type="text" id="preview-title-input" class="bg-surface-container-lowest border-[2px] border-[#0E1013] p-space-sm font-headline-sm text-headline-sm font-bold text-on-surface focus:outline-none focus:shadow-[3px_3px_0px_#2A52BE]">
+                    </div>
+
+                    <div class="flex flex-col gap-space-xs">
+                        <span class="font-label-sm text-label-sm font-bold uppercase text-on-surface">EXTRACTED TEXT EXCERPT (WILL BE PURGED AFTER 75S):</span>
+                        <div id="preview-text-scroll" class="max-h-48 overflow-y-auto bg-surface-container border-[2px] border-[#0E1013] p-space-md font-body-sm text-body-sm text-on-surface leading-relaxed"></div>
+                    </div>
+
+                    <!-- Action Trigger -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-sm border-t-[2px] border-[#0E1013]">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">⚡ Rubric key points and misconceptions will be generated dynamically</span>
+                        <button type="button" id="btn-launch-custom-session" onclick="launchCustomSession()" class="bg-[#00C853] text-[#ffffff] border-[3px] border-[#0E1013] px-space-xl py-space-md font-label-lg text-label-lg font-bold uppercase shadow-[5px_5px_0px_#0E1013] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0px_#0E1013] active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center gap-space-sm w-full sm:w-auto justify-center">
+                            <span>🚀 START TIMED 75S ASSESSMENT</span>
+                            <span class="material-symbols-outlined text-[22px]">timer</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
     <!-- SECTION 5: LIVE ARTICLE CATALOG GRID                                      -->
     <!-- ========================================================================= -->
     <section class="w-full bg-[#F7F5EE] border-b-[3px] border-[#0E1013] px-gutter md:px-margin-desktop py-space-xl" id="article-catalog">
@@ -616,6 +741,215 @@ function filterArticles(category) {
             card.style.display = 'none';
         }
     });
+}
+
+// ── Feature 6: Custom Article Importer Logic ─────────────────────
+let currentExtractedArticle = null;
+
+function switchImportTab(mode) {
+    const tabPdf = document.getElementById('tab-import-pdf');
+    const tabUrl = document.getElementById('tab-import-url');
+    const panelPdf = document.getElementById('panel-import-pdf');
+    const panelUrl = document.getElementById('panel-import-url');
+
+    if (mode === 'pdf') {
+        tabPdf.className = "bg-[#0E1013] text-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold shadow-[2px_2px_0px_#0E1013] flex items-center gap-space-xs transition-all";
+        tabUrl.className = "bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] flex items-center gap-space-xs transition-all";
+        panelPdf.classList.remove('hidden');
+        panelPdf.classList.add('flex');
+        panelUrl.classList.add('hidden');
+        panelUrl.classList.remove('flex');
+    } else {
+        tabUrl.className = "bg-[#0E1013] text-surface-container-lowest border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold shadow-[2px_2px_0px_#0E1013] flex items-center gap-space-xs transition-all";
+        tabPdf.className = "bg-surface-container-lowest text-on-surface border-[2px] border-[#0E1013] px-space-md py-space-xs font-label-md text-label-md font-bold hover:bg-secondary-container shadow-[2px_2px_0px_#0E1013] flex items-center gap-space-xs transition-all";
+        panelUrl.classList.remove('hidden');
+        panelUrl.classList.add('flex');
+        panelPdf.classList.add('hidden');
+        panelPdf.classList.remove('flex');
+    }
+}
+
+// Wire up dropzone click
+document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('pdf-dropzone');
+    const filePicker = document.getElementById('pdf-file-picker');
+    if (dropzone && filePicker) {
+        dropzone.addEventListener('click', () => filePicker.click());
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('bg-secondary-container');
+        });
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('bg-secondary-container');
+        });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('bg-secondary-container');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                filePicker.files = e.dataTransfer.files;
+                handlePdfSelected({ target: filePicker });
+            }
+        });
+    }
+});
+
+function handlePdfSelected(event) {
+    const file = event.target.files[0];
+    const badge = document.getElementById('pdf-selected-badge');
+    if (file && badge) {
+        badge.textContent = `SELECTED: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        badge.classList.remove('hidden');
+    }
+}
+
+async function extractPdf() {
+    const filePicker = document.getElementById('pdf-file-picker');
+    const file = filePicker ? filePicker.files[0] : null;
+    if (!file) {
+        showImportError("Please select or drop a PDF file first.");
+        return;
+    }
+
+    setImportLoading(true, "Extracting text and structure from PDF...");
+    hideImportError();
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const resp = await fetch("/articles/import/pdf", {
+            method: "POST",
+            body: formData,
+        });
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.detail || `Extraction failed (${resp.status})`);
+        }
+        const data = await resp.json();
+        renderImportPreview(data);
+    } catch (err) {
+        showImportError(err.message);
+    } finally {
+        setImportLoading(false);
+    }
+}
+
+async function fetchUrl() {
+    const urlInput = document.getElementById('url-input');
+    const url = urlInput ? urlInput.value.trim() : "";
+    if (!url) {
+        showImportError("Please provide an HTTP or HTTPS article URL.");
+        return;
+    }
+
+    setImportLoading(true, `Fetching and parsing article content from ${url.slice(0, 40)}...`);
+    hideImportError();
+
+    try {
+        const resp = await fetch("/articles/import/url", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: url }),
+        });
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.detail || `URL fetch failed (${resp.status})`);
+        }
+        const data = await resp.json();
+        renderImportPreview(data);
+    } catch (err) {
+        showImportError(err.message);
+    } finally {
+        setImportLoading(false);
+    }
+}
+
+function renderImportPreview(data) {
+    currentExtractedArticle = data;
+    const slate = document.getElementById('import-preview-slate');
+    const titleInput = document.getElementById('preview-title-input');
+    const textScroll = document.getElementById('preview-text-scroll');
+    const wordBadge = document.getElementById('preview-word-badge');
+    const sourceBadge = document.getElementById('preview-source-badge');
+
+    if (titleInput) titleInput.value = data.title || "Custom Article";
+    if (textScroll) textScroll.textContent = data.text || "";
+    if (wordBadge) wordBadge.textContent = `${data.word_count || 0} WORDS`;
+    if (sourceBadge) sourceBadge.textContent = `SOURCE: ${data.source.toUpperCase()}`;
+
+    if (slate) {
+        slate.classList.remove('hidden');
+        slate.classList.add('flex');
+        slate.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+async function launchCustomSession() {
+    if (!currentExtractedArticle) return;
+    const titleInput = document.getElementById('preview-title-input');
+    const title = titleInput ? titleInput.value.trim() : currentExtractedArticle.title;
+    const text = currentExtractedArticle.text;
+
+    const btn = document.getElementById('btn-launch-custom-session');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="inline-block animate-spin material-symbols-outlined text-[20px]">progress_activity</span> <span>INITIALIZING RETRIEVAL ENGINE...</span>`;
+    }
+
+    try {
+        const resp = await fetch("/articles/create-and-start", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: title, text: text }),
+        });
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.detail || "Failed to start session");
+        }
+        const res = await resp.json();
+        if (res.redirect_url) {
+            window.location.href = res.redirect_url;
+        }
+    } catch (err) {
+        showImportError(`Could not launch session: ${err.message}`);
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span>🚀 START TIMED 75S ASSESSMENT</span> <span class="material-symbols-outlined text-[22px]">timer</span>`;
+        }
+    }
+}
+
+function setImportLoading(isLoading, msg = "") {
+    const loader = document.getElementById('import-loading');
+    const loaderText = document.getElementById('import-loading-text');
+    if (loader) {
+        if (isLoading) {
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+            if (loaderText) loaderText.textContent = msg;
+        } else {
+            loader.classList.add('hidden');
+            loader.classList.remove('flex');
+        }
+    }
+}
+
+function showImportError(msg) {
+    const banner = document.getElementById('import-error');
+    const text = document.getElementById('import-error-msg');
+    if (banner && text) {
+        text.textContent = msg;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+    }
+}
+
+function hideImportError() {
+    const banner = document.getElementById('import-error');
+    if (banner) {
+        banner.classList.add('hidden');
+        banner.classList.remove('flex');
+    }
 }
 </script>
 {% endblock %}
